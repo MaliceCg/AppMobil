@@ -27,7 +27,8 @@ class RegisterViewModel: ObservableObject {
         case .enteredPassword(let password):
             state.password = password
         case .enteredConfirmPassword(let confirmPassword):
-            state.confirmPassword = confirmPassword
+                state.confirmPassword = confirmPassword
+                state.PasswordMatch = state.password == confirmPassword
         case .submitTapped:
                 if state.PasswordMatch {
                     state.isLoading = true
