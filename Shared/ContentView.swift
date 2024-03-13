@@ -7,6 +7,7 @@ struct ContentView: View {
     @ObservedObject var LogViewModel = LoginViewModel()
 
     var body: some View {
+        NavigationView {
         VStack(spacing: 20) {
             Image("logo")
                 .resizable()
@@ -30,8 +31,8 @@ struct ContentView: View {
                     .background(Color.blue)
                     .cornerRadius(10)
             }
+        
             NavigationLink(destination: LoginView(viewModel: LogViewModel)) {
-            
                 Text("Se connecter")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -43,7 +44,9 @@ struct ContentView: View {
         }
         .padding()
     }
+    }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

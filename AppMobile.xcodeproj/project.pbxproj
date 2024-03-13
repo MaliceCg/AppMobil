@@ -25,6 +25,7 @@
 		C2C0A3B82BA1B6A900351A4B /* RegisterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B72BA1B6A900351A4B /* RegisterIntent.swift */; };
 		C2C0A3BA2BA1B6F000351A4B /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B92BA1B6F000351A4B /* RegisterViewModel.swift */; };
 		C2C0A3BC2BA1B73400351A4B /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3BB2BA1B73400351A4B /* RegisterView.swift */; };
+		C2C0A3BE2BA1DCB300351A4B /* AccueilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3BD2BA1DCB300351A4B /* AccueilView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		C2C0A3B72BA1B6A900351A4B /* RegisterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterIntent.swift; sourceTree = "<group>"; };
 		C2C0A3B92BA1B6F000351A4B /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
 		C2C0A3BB2BA1B73400351A4B /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		C2C0A3BD2BA1DCB300351A4B /* AccueilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccueilView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				C2C0A3682BA0ABC500351A4B /* AppMobileApp.swift */,
 				C2C0A3692BA0ABC500351A4B /* ContentView.swift */,
 				C2C0A36A2BA0ABC700351A4B /* Assets.xcassets */,
+				C2C0A3BD2BA1DCB300351A4B /* AccueilView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				C2C0A3B82BA1B6A900351A4B /* RegisterIntent.swift in Sources */,
 				C2C0A3BA2BA1B6F000351A4B /* RegisterViewModel.swift in Sources */,
 				C2C0A3AC2BA1911700351A4B /* LoginIntent.swift in Sources */,
+				C2C0A3BE2BA1DCB300351A4B /* AccueilView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

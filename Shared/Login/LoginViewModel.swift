@@ -1,9 +1,22 @@
 import Foundation
 import SwiftUI
 
+struct LoginResponse: Codable {
+    let data: LoginData
+}
+
+struct LoginData: Codable {
+    let token: String
+    let id: Int
+    let email: String
+    let role: String
+    let pseudo: String
+}
+
 class LoginViewModel: ObservableObject {
 
     @Published var state = LoginState()
+    @Published var isLoggedIn = false
 
     private var intent: LoginIntent?
 
@@ -52,8 +65,20 @@ class LoginViewModel: ObservableObject {
             if let error = error {
                 print("Error: \(error)")
             } else if let data = data {
-                let str = String(data: data, encoding: .utf8)
-                print("Received data:\n\(str ?? "")")
+                do {
+                    let decodedResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+                    DispatchQueue.main.async {
+                        UserDefaults.standard.set(decodedResponse.data.token, forKey:"token")
+                        UserDefaults.standard.set(decodedResponse.data.role, forKey: "role")
+                        UserDefaults.standard.set(decodedResponse.data.id, forKey: "id")
+
+                        // Définir isLoggedIn à true pour déclencher une mise à jour de la vue
+                        self.isLoggedIn = true
+                    }
+                }
+                catch{
+                    print("Error decoding response: \(error)")
+                }
             }
         }
         task.resume()

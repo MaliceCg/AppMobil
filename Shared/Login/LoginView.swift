@@ -11,9 +11,19 @@ import SwiftUI
 struct LoginView: View {
 
     @ObservedObject var viewModel: LoginViewModel
+    @ObservedObject var RegisViewModel = RegisterViewModel()
 
     var body: some View {
+        if viewModel.isLoggedIn{
+            AccueilView()
+        }
+        else {
         VStack {
+            Text("Se connecter")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.blue)
+            
             TextField("Email", text: $viewModel.state.email)
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -42,7 +52,11 @@ struct LoginView: View {
                 Text(viewModel.state.error!)
                     .foregroundColor(.red)
             }
+            NavigationLink(destination: RegisterView(viewModel: RegisViewModel)) {
+                Text("S'inscrire")
+            }
         }
         .padding()
+    }
     }
 }

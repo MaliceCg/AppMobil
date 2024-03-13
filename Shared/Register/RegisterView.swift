@@ -10,9 +10,15 @@ import SwiftUI
 struct RegisterView: View {
 
     @ObservedObject var viewModel: RegisterViewModel
+    @ObservedObject var LogViewModel = LoginViewModel()
 
     var body: some View {
         VStack {
+            Text("S'inscrire")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.blue)
+            
             TextField("Pseudo", text: $viewModel.state.pseudo)
                 .padding()
                 .background(Color.gray.opacity(0.1))
@@ -52,6 +58,8 @@ struct RegisterView: View {
                     .cornerRadius(10)
             }
             .disabled(viewModel.state.isLoading)
+            
+            
             if viewModel.state.error != nil {
                 Text(viewModel.state.error!)
                     .foregroundColor(.red)
@@ -60,7 +68,12 @@ struct RegisterView: View {
                 Text("Passwords do not match")
                     .foregroundColor(.red)
             }
+            NavigationLink(destination: LoginView(viewModel: LogViewModel)) {
+                Text("Se connecter")
+                   
+            }
         }
+    
         .padding()
     }
 }
