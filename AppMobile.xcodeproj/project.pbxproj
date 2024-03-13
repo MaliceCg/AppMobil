@@ -21,6 +21,10 @@
 		C2C0A3AE2BA1913700351A4B /* LoginState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3AD2BA1913700351A4B /* LoginState.swift */; };
 		C2C0A3B02BA1916B00351A4B /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */; };
 		C2C0A3B22BA191BD00351A4B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B12BA191BD00351A4B /* LoginView.swift */; };
+		C2C0A3B62BA1B58600351A4B /* RegisterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B52BA1B58600351A4B /* RegisterState.swift */; };
+		C2C0A3B82BA1B6A900351A4B /* RegisterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B72BA1B6A900351A4B /* RegisterIntent.swift */; };
+		C2C0A3BA2BA1B6F000351A4B /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3B92BA1B6F000351A4B /* RegisterViewModel.swift */; };
+		C2C0A3BC2BA1B73400351A4B /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3BB2BA1B73400351A4B /* RegisterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +61,10 @@
 		C2C0A3AD2BA1913700351A4B /* LoginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginState.swift; sourceTree = "<group>"; };
 		C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewModel.swift; path = Shared/Login/LoginViewModel.swift; sourceTree = SOURCE_ROOT; };
 		C2C0A3B12BA191BD00351A4B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = Shared/Login/LoginView.swift; sourceTree = SOURCE_ROOT; };
+		C2C0A3B52BA1B58600351A4B /* RegisterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterState.swift; sourceTree = "<group>"; };
+		C2C0A3B72BA1B6A900351A4B /* RegisterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterIntent.swift; sourceTree = "<group>"; };
+		C2C0A3B92BA1B6F000351A4B /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
+		C2C0A3BB2BA1B73400351A4B /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +178,10 @@
 		C2C0A3A52BA18FD300351A4B /* Register */ = {
 			isa = PBXGroup;
 			children = (
+				C2C0A3B52BA1B58600351A4B /* RegisterState.swift */,
+				C2C0A3B72BA1B6A900351A4B /* RegisterIntent.swift */,
+				C2C0A3B92BA1B6F000351A4B /* RegisterViewModel.swift */,
+				C2C0A3BB2BA1B73400351A4B /* RegisterView.swift */,
 			);
 			path = Register;
 			sourceTree = "<group>";
@@ -369,10 +381,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2C0A3B22BA191BD00351A4B /* LoginView.swift in Sources */,
+				C2C0A3BC2BA1B73400351A4B /* RegisterView.swift in Sources */,
 				C2C0A3922BA0ABC800351A4B /* ContentView.swift in Sources */,
 				C2C0A3AE2BA1913700351A4B /* LoginState.swift in Sources */,
 				C2C0A3902BA0ABC800351A4B /* AppMobileApp.swift in Sources */,
+				C2C0A3B62BA1B58600351A4B /* RegisterState.swift in Sources */,
 				C2C0A3B02BA1916B00351A4B /* LoginViewModel.swift in Sources */,
+				C2C0A3B82BA1B6A900351A4B /* RegisterIntent.swift in Sources */,
+				C2C0A3BA2BA1B6F000351A4B /* RegisterViewModel.swift in Sources */,
 				C2C0A3AC2BA1911700351A4B /* LoginIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
