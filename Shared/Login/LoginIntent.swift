@@ -8,7 +8,6 @@
 import Foundation
 enum LoginIntent {
     case enteredEmail(String)
-    case enteredPseudo(String)
     case enteredPassword(String)
     case submitTapped
     

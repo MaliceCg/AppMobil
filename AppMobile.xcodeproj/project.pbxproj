@@ -55,8 +55,8 @@
 		C2C0A38E2BA0ABC800351A4B /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		C2C0A3AB2BA1911700351A4B /* LoginIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginIntent.swift; sourceTree = "<group>"; };
 		C2C0A3AD2BA1913700351A4B /* LoginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginState.swift; sourceTree = "<group>"; };
-		C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewModel.swift; path = Shared/LoginViewModel.swift; sourceTree = SOURCE_ROOT; };
-		C2C0A3B12BA191BD00351A4B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = Shared/LoginView.swift; sourceTree = SOURCE_ROOT; };
+		C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewModel.swift; path = Shared/Login/LoginViewModel.swift; sourceTree = SOURCE_ROOT; };
+		C2C0A3B12BA191BD00351A4B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = Shared/Login/LoginView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,10 +112,6 @@
 				C2C0A3A62BA18FE500351A4B /* Dashboard */,
 				C2C0A3A52BA18FD300351A4B /* Register */,
 				C2C0A3A42BA18FC400351A4B /* Login */,
-				C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */,
-				C2C0A3AD2BA1913700351A4B /* LoginState.swift */,
-				C2C0A3AB2BA1911700351A4B /* LoginIntent.swift */,
-				C2C0A3B12BA191BD00351A4B /* LoginView.swift */,
 				C2C0A3682BA0ABC500351A4B /* AppMobileApp.swift */,
 				C2C0A3692BA0ABC500351A4B /* ContentView.swift */,
 				C2C0A36A2BA0ABC700351A4B /* Assets.xcassets */,
@@ -163,6 +159,10 @@
 		C2C0A3A42BA18FC400351A4B /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				C2C0A3AD2BA1913700351A4B /* LoginState.swift */,
+				C2C0A3AB2BA1911700351A4B /* LoginIntent.swift */,
+				C2C0A3B12BA191BD00351A4B /* LoginView.swift */,
+				C2C0A3AF2BA1916B00351A4B /* LoginViewModel.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";

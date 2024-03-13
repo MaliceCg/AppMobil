@@ -21,13 +21,6 @@ struct LoginView: View {
                 .onChange(of: viewModel.state.email) { newValue in
                     viewModel.send(intent: .enteredEmail(newValue))
                 }
-            TextField("Pseudo", text: $viewModel.state.pseudo)
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
-                .onChange(of: viewModel.state.pseudo) {newValue in
-                    viewModel.send(intent: .enteredPseudo(newValue))
-                }
             SecureField("Password", text: $viewModel.state.password)
                 .padding()
                 .background(Color.gray.opacity(0.1))
