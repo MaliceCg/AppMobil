@@ -20,6 +20,7 @@ class LoginViewModel: ObservableObject {
         case .enteredPassword(let password):
             state.password = password
         case .submitTapped:
+            print("cc")
             state.isLoading = true
             postRequest()
         }
@@ -27,14 +28,15 @@ class LoginViewModel: ObservableObject {
     }
 
     private func postRequest() {
-        let url = URL(string: "https://awi-api-2.onrender.com/inscription-module/getAllbenevoleInscritToday")!
+        let url = URL(string: "https://awi-api-2.onrender.com/authentication-module/signin")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
 
         let parameters: [String: Any] = [
-            "email": state.email,
-            "password": state.password
+            "Email": state.email,
+            "Password": state.password
         ]
+        print(parameters)
 
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
