@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+
 struct LoginView: View {
 
     @ObservedObject var viewModel: LoginViewModel

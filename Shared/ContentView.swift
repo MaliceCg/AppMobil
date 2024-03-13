@@ -1,16 +1,14 @@
-//
-//  ContentView.swift
-//  Shared
-//
-//  Created by Marine Cantaloube girona on 12/03/2024.
-//
-
+// ContentView.swift
 import SwiftUI
 
+
 struct ContentView: View {
+    // Ajoutez cette ligne pour initialiser LoginViewModel
+    @ObservedObject var viewModel = LoginViewModel()
+
     var body: some View {
-        Text("cc!")
-            .padding()
+        // Modifiez cette ligne pour passer viewModel à LoginView
+        LoginView(viewModel: viewModel)
     }
 }
 
