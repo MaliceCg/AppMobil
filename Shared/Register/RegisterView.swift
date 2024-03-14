@@ -13,6 +13,9 @@ struct RegisterView: View {
     @ObservedObject var LogViewModel = LoginViewModel()
 
     var body: some View {
+        if viewModel.isRegister{
+            LoginView(viewModel: LogViewModel)
+        }
         VStack {
             Text("S'inscrire")
                 .font(.largeTitle)

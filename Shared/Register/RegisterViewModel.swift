@@ -9,6 +9,7 @@ import Foundation
 class RegisterViewModel: ObservableObject {
 
     @Published var state = RegisterState()
+    @Published var isRegister = false
 
     private var intent: RegisterIntent?
 
@@ -66,8 +67,10 @@ class RegisterViewModel: ObservableObject {
             if let error = error {
                 print("Error: \(error)")
             } else if let data = data {
+                self.isRegister = true
                 let str = String(data: data, encoding: .utf8)
                 print("Received data:\n\(str ?? "")")
+                
             }
         }
         task.resume()
