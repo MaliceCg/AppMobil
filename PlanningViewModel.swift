@@ -27,7 +27,10 @@ class PlanningViewModel: ObservableObject{
       switch intent {
       case .fetchFestivalData:
           fetchFestivalData()
+      case .fetchPositionsData:
+          fetchPositionsData()
       }
+  
   }
   
   func fetchFestivalData() {
@@ -58,7 +61,7 @@ class PlanningViewModel: ObservableObject{
             DispatchQueue.main.async {
                 self.objectWillChange.send()
                 self.state.festival = decodedFestival
-                print("festival : ", self.state.festival)
+              
             }
 
 
@@ -71,6 +74,42 @@ class PlanningViewModel: ObservableObject{
       task.resume()
   }
   
+  func fetchPositionsData() {
+      let url = "https://awi-api-2.onrender.com/position-module"
+    
+      print("Request : ", url)
+
+      guard let url = URL(string: url) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedPositions = try decoder.decode([Position].self, from: data)
+              print("positions : ", decodedPositions)
+              DispatchQueue.main.async {
+                  self.state.positions = decodedPositions
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+
 
 }
 

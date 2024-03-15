@@ -9,4 +9,5 @@ import Foundation
 
 enum PlanningIntent {
     case fetchFestivalData
+    case fetchPositionsData
 }

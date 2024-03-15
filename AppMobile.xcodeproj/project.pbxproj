@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		554891AD2BA4850400496CB0 /* PositionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554891AC2BA4850400496CB0 /* PositionModel.swift */; };
 		55F715B72BA38FF100B604BC /* PlanningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F715B62BA38FF100B604BC /* PlanningState.swift */; };
 		55F715B92BA38FFD00B604BC /* PlanningIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F715B82BA38FFD00B604BC /* PlanningIntent.swift */; };
 		55F715BB2BA3900B00B604BC /* PlanningViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F715BA2BA3900B00B604BC /* PlanningViewModel.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		554891AC2BA4850400496CB0 /* PositionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionModel.swift; sourceTree = "<group>"; };
 		55F715B62BA38FF100B604BC /* PlanningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanningState.swift; sourceTree = SOURCE_ROOT; };
 		55F715B82BA38FFD00B604BC /* PlanningIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanningIntent.swift; sourceTree = SOURCE_ROOT; };
 		55F715BA2BA3900B00B604BC /* PlanningViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanningViewModel.swift; sourceTree = SOURCE_ROOT; };
@@ -137,6 +139,7 @@
 				C2C0A36A2BA0ABC700351A4B /* Assets.xcassets */,
 				C2C0A3BD2BA1DCB300351A4B /* AccueilView.swift */,
 				C2C0A3BF2BA3511C00351A4B /* Festival.swift */,
+				554891AC2BA4850400496CB0 /* PositionModel.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				55F715B72BA38FF100B604BC /* PlanningState.swift in Sources */,
 				C2C0A3AE2BA1913700351A4B /* LoginState.swift in Sources */,
 				C2C0A3902BA0ABC800351A4B /* AppMobileApp.swift in Sources */,
+				554891AD2BA4850400496CB0 /* PositionModel.swift in Sources */,
 				55F715BB2BA3900B00B604BC /* PlanningViewModel.swift in Sources */,
 				C2C0A3B62BA1B58600351A4B /* RegisterState.swift in Sources */,
 				C2C0A3B02BA1916B00351A4B /* LoginViewModel.swift in Sources */,
