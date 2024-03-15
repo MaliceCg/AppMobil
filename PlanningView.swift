@@ -25,17 +25,30 @@ struct PlanningView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.bottom, 36)
-                ForEach(viewModel.state.timeSlots, id: \.self) { timeSlot in
-                    Text(timeSlot)
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.bottom, 36)
+                if index < viewModel.hasInscription.count {
+                    ForEach(Array(zip(viewModel.state.timeSlots, viewModel.hasInscription[index])), id: \.0) { timeSlot, hasInscription in
+                        Text(timeSlot)
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.bottom, 36)
+                            .background(hasInscription ? Color.red : Color.clear) // Mettre en forme le créneau en fonction de la présence ou non d'une inscription
+                    }
+                } else {
+                    ForEach(viewModel.state.timeSlots, id: \.self) { timeSlot in
+                        Text(timeSlot)
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.bottom, 36)
+                            .background(Color.clear)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.horizontal, 8)
         }
     }
+
+
 
 
     var body: some View {
@@ -53,8 +66,6 @@ struct PlanningView: View {
         }
         .onAppear {
             self.viewModel.fetchFestivalData()
-            self.viewModel.fetchPositionsData()
-            self.viewModel.fetchEmployerData()
         }
     }
 

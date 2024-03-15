@@ -11,6 +11,7 @@ import SwiftUI
 class PlanningViewModel: ObservableObject{
   
   @Published var state = PlanningState()
+  @Published var hasInscription: [[Bool]] = []
   
   private var planningIntent: PlanningIntent?
   
@@ -20,6 +21,7 @@ class PlanningViewModel: ObservableObject{
   let userRole = "user"
   
   let idFestival: Int = 1
+
   
   func send(intent: PlanningIntent) {
       self.planningIntent = intent
@@ -63,7 +65,8 @@ class PlanningViewModel: ObservableObject{
             DispatchQueue.main.async {
                 self.objectWillChange.send()
                 self.state.festival = decodedFestival
-              
+                self.fetchPositionsData()
+                self.fetchEmployerData()
             }
 
 
@@ -144,22 +147,29 @@ class PlanningViewModel: ObservableObject{
   }
   
   func fetchUserInscriptions() {
-    print("Début requête ! ")
+      print("Début requête ! ")
+      let group = DispatchGroup()
       for employer in state.employers {
+          group.enter()
           guard employer.idPoste != 0 else {
               print("Position ID is not set for employer: \(employer)")
+              group.leave()
               continue
           }
           let positionId = employer.idPoste
 
-
           let urlString = "\(url)inscription-module/position/\(positionId)/volunteer/\(userId)"
           guard let url = URL(string: urlString) else {
               print("Invalid URL for employer: \(employer)")
+              group.leave()
               continue
           }
 
           let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+              defer {
+                  group.leave()
+              }
+
               if let error = error {
                   print("Error: \(error)")
                   return
@@ -174,6 +184,7 @@ class PlanningViewModel: ObservableObject{
                   let decoder = JSONDecoder()
                   let inscriptions = try decoder.decode([Inscription].self, from: data)
                   print("Inscription : ", inscriptions)
+
                   DispatchQueue.main.async {
                       self.state.inscriptions.append(contentsOf: inscriptions)
                   }
@@ -184,10 +195,23 @@ class PlanningViewModel: ObservableObject{
 
           task.resume()
       }
-    
-  }
 
-  
+      group.notify(queue: .main) {
+          // Remplir le tableau hasInscription avec les inscriptions de l'utilisateur
+          self.hasInscription = Array(repeating: Array(repeating: false, count: self.state.timeSlots.count), count: self.state.festival!.dureeFestival())
+
+          for inscription in self.state.inscriptions {
+              let dateFormatter = DateFormatter()
+              dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+              let date = dateFormatter.date(from: inscription.Jour)!
+              let timeSlotIndex = self.state.timeSlots.firstIndex(of: inscription.Creneau)!
+              let dayIndex = Calendar.current.dateComponents([.day], from: self.state.festival!.dateDebut, to: date).day!
+              self.hasInscription[dayIndex][timeSlotIndex] = true
+          }
+
+          print(self.hasInscription)
+      }
+  }
 
 
 }
