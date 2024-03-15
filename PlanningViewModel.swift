@@ -31,6 +31,8 @@ class PlanningViewModel: ObservableObject{
           fetchPositionsData()
       case .fetchEmployerData:
           fetchEmployerData()
+      case .fetchInscriptions:
+          fetchUserInscriptions()
       }
   
   }
@@ -131,6 +133,7 @@ class PlanningViewModel: ObservableObject{
               print("data : ", employers)
               DispatchQueue.main.async {
                   self.state.employers = employers
+                  self.fetchUserInscriptions() 
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -139,6 +142,52 @@ class PlanningViewModel: ObservableObject{
 
       task.resume()
   }
+  
+  func fetchUserInscriptions() {
+    print("Début requête ! ")
+      for employer in state.employers {
+          guard employer.idPoste != 0 else {
+              print("Position ID is not set for employer: \(employer)")
+              continue
+          }
+          let positionId = employer.idPoste
+
+
+          let urlString = "\(url)inscription-module/position/\(positionId)/volunteer/\(userId)"
+          guard let url = URL(string: urlString) else {
+              print("Invalid URL for employer: \(employer)")
+              continue
+          }
+
+          let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+              if let error = error {
+                  print("Error: \(error)")
+                  return
+              }
+
+              guard let data = data else {
+                  print("No data received for employer: \(employer)")
+                  return
+              }
+
+              do {
+                  let decoder = JSONDecoder()
+                  let inscriptions = try decoder.decode([Inscription].self, from: data)
+                  print("Inscription : ", inscriptions)
+                  DispatchQueue.main.async {
+                      self.state.inscriptions.append(contentsOf: inscriptions)
+                  }
+              } catch {
+                  print("Error decoding response: \(error)")
+              }
+          }
+
+          task.resume()
+      }
+    
+  }
+
+  
 
 
 }

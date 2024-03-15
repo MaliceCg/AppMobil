@@ -33,6 +33,8 @@ struct RegisterView: View {
                 .padding()
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(10)
+                .autocapitalization(.none)
+                .keyboardType(.emailAddress)
                 .onChange(of: viewModel.state.email) { newValue in
                     viewModel.send(intent: .enteredEmail(newValue))
                 }

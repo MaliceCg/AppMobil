@@ -11,4 +11,5 @@ enum PlanningIntent {
     case fetchFestivalData
     case fetchPositionsData
     case fetchEmployerData
+    case fetchInscriptions
 }
