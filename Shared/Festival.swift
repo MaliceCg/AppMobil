@@ -32,4 +32,10 @@ struct Festival: Identifiable, Decodable {
         dateFin = try dateFormatter.date(from: try container.decode(String.self, forKey: .dateFin)) ?? Date()
         ville = try container.decodeIfPresent(String.self, forKey: .ville)
     }
+  
+    func dureeFestival() -> Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.day], from: dateDebut, to: dateFin)
+        return (components.day ?? 0) + 1
+    }
 }
