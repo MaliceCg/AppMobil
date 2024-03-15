@@ -10,6 +10,7 @@ import Foundation
 class PlanningState: ObservableObject {
     @Published var festival: Festival? = nil
     @Published var positions: [Position] = []
+    @Published var employers: [Employer] = []
     @Published var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
 }
 

@@ -54,6 +54,7 @@ struct PlanningView: View {
         .onAppear {
             self.viewModel.fetchFestivalData()
             self.viewModel.fetchPositionsData()
+            self.viewModel.fetchEmployerData()
         }
     }
 

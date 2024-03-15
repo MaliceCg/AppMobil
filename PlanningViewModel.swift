@@ -29,6 +29,8 @@ class PlanningViewModel: ObservableObject{
           fetchFestivalData()
       case .fetchPositionsData:
           fetchPositionsData()
+      case .fetchEmployerData:
+          fetchEmployerData()
       }
   
   }
@@ -36,7 +38,6 @@ class PlanningViewModel: ObservableObject{
   func fetchFestivalData() {
 
       let festivalURL = "\(url)festival-module/\(idFestival)"
-      print(festivalURL)
 
       var request = URLRequest(url: URL(string: festivalURL)!)
       request.httpMethod = "GET" // Définir la méthode HTTP à utiliser
@@ -57,7 +58,6 @@ class PlanningViewModel: ObservableObject{
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             let decodedFestival = try decoder.decode(Festival.self, from: data)
-            print(decodedFestival)
             DispatchQueue.main.async {
                 self.objectWillChange.send()
                 self.state.festival = decodedFestival
@@ -75,10 +75,8 @@ class PlanningViewModel: ObservableObject{
   }
   
   func fetchPositionsData() {
-      let url = "https://awi-api-2.onrender.com/position-module"
+      let url = "\(url)position-module"
     
-      print("Request : ", url)
-
       guard let url = URL(string: url) else {
           print("Invalid URL")
           return
@@ -98,9 +96,41 @@ class PlanningViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let decodedPositions = try decoder.decode([Position].self, from: data)
-              print("positions : ", decodedPositions)
               DispatchQueue.main.async {
                   self.state.positions = decodedPositions
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+
+  func fetchEmployerData() {
+      let urlEmployer = "\(url)employer-module/festival/\(idFestival)"
+      guard let url = URL(string: urlEmployer) else {
+          print("Invalid URL")
+          return
+      }
+      print("Request : ", url)
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let employers = try decoder.decode([Employer].self, from: data)
+              print("data : ", employers)
+              DispatchQueue.main.async {
+                  self.state.employers = employers
               }
           } catch {
               print("Error decoding response: \(error)")
