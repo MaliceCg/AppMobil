@@ -6,6 +6,17 @@
 //
 
 import Foundation
+struct FestivalID: Identifiable, Hashable {
+    var id: Int
+
+    static func == (lhs: FestivalID, rhs: FestivalID) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
 struct Festival: Identifiable, Decodable {
     let id: Int
     let nomFestival: String

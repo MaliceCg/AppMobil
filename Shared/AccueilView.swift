@@ -6,10 +6,9 @@
 //
 
 import SwiftUI
-
 struct AccueilView: View {
     @State private var festivals: [Festival] = []
-    @State private var selectedFestivalId: Int? = nil
+    @State private var selectedFestivalId: FestivalID? = nil
 
     var body: some View {
         NavigationView {
@@ -21,7 +20,7 @@ struct AccueilView: View {
                 } else {
                     List(festivals) { festival in
                         Button(action: {
-                            self.selectedFestivalId = festival.id
+                            self.selectedFestivalId = FestivalID(id: festival.id)
                         }) {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -37,6 +36,14 @@ struct AccueilView: View {
                         }
                     }
                     .listStyle(PlainListStyle())
+                    NavigationLink(
+                        destination: DashboardView(festivalId: selectedFestivalId?.id ?? 0),
+                        tag: selectedFestivalId ?? FestivalID.init(id: 0),
+                        selection: $selectedFestivalId
+                    ) {
+                        EmptyView()
+                    }
+
                 }
             }
             .navigationBarTitle("Choisir un festival")
@@ -82,3 +89,5 @@ struct AccueilView: View {
         return dateFormatter.string(from: date)
     }
 }
+
+
