@@ -11,7 +11,9 @@ import SwiftUI
 class PlanningViewModel: ObservableObject{
   
   @Published var state = PlanningState()
-  @Published var hasInscription: [[Bool]] = []
+  @Published var inscriptionColors: [[Color?]] = [[nil]]
+
+
   
   private var planningIntent: PlanningIntent?
   
@@ -65,6 +67,9 @@ class PlanningViewModel: ObservableObject{
             DispatchQueue.main.async {
                 self.objectWillChange.send()
                 self.state.festival = decodedFestival
+              
+                self.inscriptionColors = Array(repeating: Array(repeating: nil, count: self.state.timeSlots.count), count: self.state.festival!.dureeFestival())
+              
                 self.fetchPositionsData()
                 self.fetchEmployerData()
             }
@@ -197,20 +202,33 @@ class PlanningViewModel: ObservableObject{
       }
 
       group.notify(queue: .main) {
-          // Remplir le tableau hasInscription avec les inscriptions de l'utilisateur
-          self.hasInscription = Array(repeating: Array(repeating: false, count: self.state.timeSlots.count), count: self.state.festival!.dureeFestival())
-
+          // Remplir le tableau inscriptionColors avec les couleurs correspondantes aux inscriptions de l'utilisateur
           for inscription in self.state.inscriptions {
               let dateFormatter = DateFormatter()
               dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
               let date = dateFormatter.date(from: inscription.Jour)!
               let timeSlotIndex = self.state.timeSlots.firstIndex(of: inscription.Creneau)!
               let dayIndex = Calendar.current.dateComponents([.day], from: self.state.festival!.dateDebut, to: date).day!
-              self.hasInscription[dayIndex][timeSlotIndex] = true
-          }
 
-          print(self.hasInscription)
+              // Trouver le nom du poste correspondant à l'ID du poste dans l'inscription
+              let postName = self.state.positions.first(where: { $0.idPoste == inscription.idPoste })?.nomPoste ?? ""
+
+              // Définir la couleur correspondante au poste dans la matrice inscriptionColors
+              switch postName.lowercased() {
+                  case "accueil":
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.23529411764705882, green: 0.796078431372549, blue: 0.9568627450980393)
+                  case "buvette":
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06666666666666667, green: 0.4980392156862745, blue: 0.27058823529411763)
+                  case "animation jeux":
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06274509803921569, green: 0.3607843137254902, blue: 0.6235294117647059)
+                  case "cuisine":
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.2, green: 0.7686274509803922, blue: 0.5058823529411764)
+                  default:
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.9568627450980393, green: 0.7176470588235294, blue: 0.25098039215686274)
+              }
+          }
       }
+
   }
 
 

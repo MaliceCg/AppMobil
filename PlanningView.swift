@@ -25,29 +25,27 @@ struct PlanningView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.bottom, 36)
-                if index < viewModel.hasInscription.count {
-                    ForEach(Array(zip(viewModel.state.timeSlots, viewModel.hasInscription[index])), id: \.0) { timeSlot, hasInscription in
-                        Text(timeSlot)
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.bottom, 36)
-                            .background(hasInscription ? Color.red : Color.clear) // Mettre en forme le créneau en fonction de la présence ou non d'une inscription
-                    }
-                } else {
-                    ForEach(viewModel.state.timeSlots, id: \.self) { timeSlot in
-                        Text(timeSlot)
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.bottom, 36)
-                            .background(Color.clear)
-                    }
+                ForEach(Array(zip(viewModel.state.timeSlots, viewModel.inscriptionColors[index])), id: \.0) { timeSlot, inscriptionColor in
+                    Text(timeSlot)
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(inscriptionColor ?? Color.clear)
+                                .frame(height: 40)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 0)
+                                .frame(height: 40)
+                        )
+                        .padding(.bottom, 36)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.horizontal, 8)
         }
     }
-
 
 
 
