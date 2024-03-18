@@ -8,7 +8,8 @@
 import SwiftUI
 struct AccueilView: View {
     @State private var festivals: [Festival] = []
-    @State private var selectedFestivalId: FestivalID? = nil
+    @State private var selectedFestivalId : FestivalID? //oblige d'etre optionnel pour le depart avant le choix
+
 
     var body: some View {
         NavigationView {
@@ -36,13 +37,14 @@ struct AccueilView: View {
                         }
                     }
                     .listStyle(PlainListStyle())
-                    NavigationLink(
-                        destination: DashboardView(festivalId: selectedFestivalId?.id ?? 0),
-                        tag: selectedFestivalId ?? FestivalID.init(id: 0),
-                        selection: $selectedFestivalId
-                    ) {
-                        EmptyView()
-                    }
+                    if let selectedFestivalId = selectedFestivalId {
+                                            NavigationLink(destination: TabBarView(festivalId: selectedFestivalId), isActive: Binding<Bool>(
+                                                get: { selectedFestivalId != nil },
+                                                set: { _ in }
+                                            )) {
+                                                EmptyView()
+                                            }
+                                        }
 
                 }
             }

@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct DashboardView: View {
-    var festivalId: Int
+    @Binding var selectedFestivalId: FestivalID
 
        var body: some View {
-           Text("Festival ID : \(festivalId)")
-               //.navigationBarBackButtonHidden(true) permet de pas avoir le bouton back Chosiir Festival
-           
+           VStack {
+           Text("Festival ID : \(selectedFestivalId.id)")
+           Text("Je suis Dashboard")
+               .navigationBarBackButtonHidden(true)
+           }
        }
 }
 

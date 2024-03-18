@@ -9,7 +9,8 @@ import SwiftUI
 
 
 struct PlanningView: View {
-  
+    @Binding var festivalId: FestivalID
+    /*
     
     @ObservedObject var viewModel: PlanningViewModel
   
@@ -48,9 +49,10 @@ struct PlanningView: View {
     }
 
 
-
+*/
     var body: some View {
         VStack {
+            /*
             if let festival = viewModel.state.festival {
                 Text(festival.nomFestival)
                     .font(.largeTitle)
@@ -65,11 +67,12 @@ struct PlanningView: View {
         .onAppear {
             self.viewModel.fetchFestivalData()
         }
+             */
     }
 
     
 }
-
+}
 
 
 

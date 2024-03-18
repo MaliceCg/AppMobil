@@ -11,7 +11,7 @@ import SwiftUI
 struct AppMobileApp: App {
     var body: some Scene {
         WindowGroup {
-            PlanningView(viewModel: PlanningViewModel())
+            AccueilView()
         }
     }
 }
