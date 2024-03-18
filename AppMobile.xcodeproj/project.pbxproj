@@ -41,6 +41,7 @@
 		C2C0A3D02BA6053E00351A4B /* ActivitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3CF2BA6053E00351A4B /* ActivitesView.swift */; };
 		C2C0A3D22BA8C27800351A4B /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3D12BA8C27700351A4B /* HeaderView.swift */; };
 		C2C0A3D42BA8C33800351A4B /* FestivalPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3D32BA8C33800351A4B /* FestivalPicker.swift */; };
+		C2C0A3D82BA8CF5700351A4B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0A3D72BA8CF5600351A4B /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		C2C0A3CF2BA6053E00351A4B /* ActivitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitesView.swift; sourceTree = "<group>"; };
 		C2C0A3D12BA8C27700351A4B /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		C2C0A3D32BA8C33800351A4B /* FestivalPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FestivalPicker.swift; sourceTree = "<group>"; };
+		C2C0A3D72BA8CF5600351A4B /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 				C2C0A3C92BA603D200351A4B /* TabBarView.swift */,
 				C2C0A3D12BA8C27700351A4B /* HeaderView.swift */,
 				C2C0A3D32BA8C33800351A4B /* FestivalPicker.swift */,
+				C2C0A3D72BA8CF5600351A4B /* ProfileView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2C0A3B22BA191BD00351A4B /* LoginView.swift in Sources */,
+				C2C0A3D82BA8CF5700351A4B /* ProfileView.swift in Sources */,
 				C2C0A3BC2BA1B73400351A4B /* RegisterView.swift in Sources */,
 				C2C0A3922BA0ABC800351A4B /* ContentView.swift in Sources */,
 				C2C0A3CE2BA6052900351A4B /* InscriptionView.swift in Sources */,
