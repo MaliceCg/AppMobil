@@ -9,11 +9,17 @@ import SwiftUI
 
 struct InscriptionView: View {
     @Binding var festivalId: FestivalID
+    @State private var currentPage = "inscription"
     var body: some View {
         VStack {
-        Text("Festival ID : \(festivalId.id)")
-        Text("Je suis Inscription")
+            HeaderView(selectedFestivalId: $festivalId,currentPage: $currentPage )
+            
+            Text("Festival ID : \(festivalId.id)")
+            Text("Je suis Inscription")
+                .navigationBarBackButtonHidden(true)
+            Spacer()
         }
+        .edgesIgnoringSafeArea(.top)
     }
 }
 

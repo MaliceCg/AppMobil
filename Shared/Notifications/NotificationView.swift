@@ -9,11 +9,16 @@ import SwiftUI
 
 struct NotificationView: View {
     @Binding var festivalId: FestivalID
+    @State private var currentPage = "notifications"
     var body: some View {
         VStack {
-        Text("Festival ID : \(festivalId.id)")
-        Text("Je suis Notification")
+            HeaderView(selectedFestivalId: $festivalId,currentPage: $currentPage )
+            Text("Festival ID : \(festivalId.id)")
+            Text("Je suis Notification")
+                .navigationBarBackButtonHidden(true)
+            Spacer()
         }
+        .edgesIgnoringSafeArea(.top)
     }
 }
 
