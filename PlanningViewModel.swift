@@ -22,7 +22,14 @@ class PlanningViewModel: ObservableObject{
   let userId = 1
   let userRole = "user"
   
-  let idFestival: Int = 1
+  @Published var idFestival: FestivalID
+  
+  init(idFestival: FestivalID) {
+      self.idFestival = idFestival
+      self.fetchFestivalData()
+  }
+
+  
 
   
   func send(intent: PlanningIntent) {
@@ -43,7 +50,7 @@ class PlanningViewModel: ObservableObject{
   
   func fetchFestivalData() {
 
-      let festivalURL = "\(url)festival-module/\(idFestival)"
+      let festivalURL = "\(url)festival-module/\(idFestival.id)"
 
       var request = URLRequest(url: URL(string: festivalURL)!)
       request.httpMethod = "GET" // Définir la méthode HTTP à utiliser
@@ -118,7 +125,7 @@ class PlanningViewModel: ObservableObject{
   }
 
   func fetchEmployerData() {
-      let urlEmployer = "\(url)employer-module/festival/\(idFestival)"
+    let urlEmployer = "\(url)employer-module/festival/\(idFestival.id)"
       guard let url = URL(string: urlEmployer) else {
           print("Invalid URL")
           return

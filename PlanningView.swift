@@ -69,9 +69,8 @@ struct PlanningView: View {
                 Text("Chargement...")
             }
           
-        }
-        .onAppear {
-            self.viewModel.fetchFestivalData()
+            Spacer()
+          
         }
         .edgesIgnoringSafeArea(.top)
       
