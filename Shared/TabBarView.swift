@@ -12,7 +12,7 @@ struct TabBarView: View {
     var body: some View {
         TabView {
             
-            NotificationView(festivalId: $festivalId)
+            NotificationView(festivalId: $festivalId, viewModel: NotificationViewModel(idFestival: festivalId))
                 .tabItem {
                     Image(systemName: "bell")
                     Text("Notifications")
