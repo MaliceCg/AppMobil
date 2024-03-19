@@ -17,7 +17,7 @@ struct TabBarView: View {
                     Image(systemName: "bell")
                     Text("Notifications")
                 }
-            PlanningView(festivalId: $festivalId)
+            PlanningView(festivalId: $festivalId, viewModel: PlanningViewModel())
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Planning")

@@ -10,9 +10,12 @@ import SwiftUI
 
 struct PlanningView: View {
     @Binding var festivalId: FestivalID
-    /*
+    
     
     @ObservedObject var viewModel: PlanningViewModel
+  
+    @State private var currentPage = "planning"
+  
   
 
     private func buildDaysView(for festival: Festival) -> some View {
@@ -48,11 +51,13 @@ struct PlanningView: View {
         }
     }
 
-
-*/
+   
     var body: some View {
+      
         VStack {
-            /*
+          
+            HeaderView(selectedFestivalId: $festivalId,currentPage: $currentPage )
+            
             if let festival = viewModel.state.festival {
                 Text(festival.nomFestival)
                     .font(.largeTitle)
@@ -63,16 +68,18 @@ struct PlanningView: View {
             } else {
                 Text("Chargement...")
             }
+          
         }
         .onAppear {
             self.viewModel.fetchFestivalData()
         }
-             */
+        .edgesIgnoringSafeArea(.top)
+      
     }
-
+   
     
 }
-}
+
 
 
 
