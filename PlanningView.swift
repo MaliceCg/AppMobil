@@ -129,5 +129,8 @@ struct PlanningView: View {
 
          }
          .edgesIgnoringSafeArea(.top)
+         .onAppear {
+            viewModel.send(intent: .fetchFestivalData)
+          }
      }
  }

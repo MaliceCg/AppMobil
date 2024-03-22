@@ -7,9 +7,15 @@
 
 import Foundation
 
-struct Position: Codable {
+struct Position: Codable, Identifiable {
     let idPoste: Int
     let nomPoste: String
     let description: String
     let capacite: Int
+
+    var id: Int {
+        return idPoste
+    }
 }
+
+

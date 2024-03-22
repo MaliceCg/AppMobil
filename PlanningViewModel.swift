@@ -26,7 +26,6 @@ class PlanningViewModel: ObservableObject{
   
   init(idFestival: FestivalID) {
       self.idFestival = idFestival
-      self.fetchFestivalData()
   }
 
   
