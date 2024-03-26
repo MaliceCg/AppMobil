@@ -13,6 +13,9 @@ struct InscriptionCreneauView: View {
     @ObservedObject var viewModel: InscriptionViewModel
     @State private var currentPage = "inscription"
   
+    @State private var alertMessage: String = ""
+    @State private var showAlert: Bool = false
+  
     private func getDayViewWidth(festival: Festival) -> CGFloat {
            let screenWidth = UIScreen.main.bounds.width
            let numberOfDays = CGFloat(festival.dureeFestival())
@@ -55,24 +58,49 @@ struct InscriptionCreneauView: View {
     }
 
 
-        private func buildTimeSlotsView(for festival: Festival, index: Int) -> some View {
+    private func buildTimeSlotsView(for festival: Festival, index: Int) -> some View {
+        let date = Calendar.current.date(byAdding: .day, value: index, to: festival.dateDebut)!
+        return Group {
             ForEach(Array(zip(viewModel.timeSlots.indices, viewModel.timeSlots)), id: \.0) { index, timeSlot in
-                buildTimeSlotView(timeSlot: timeSlot)
+                buildTimeSlotView(timeSlot: timeSlot, date: date)
             }
         }
+    }
 
 
-        private func buildTimeSlotView(timeSlot: String) -> some View {
-            Text(timeSlot)
-                .font(.subheadline)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray, lineWidth: 0)
-                        .frame(height: 40)
-                )
-                .padding(.bottom, 36)
-        }
+
+
+      private func buildTimeSlotView(timeSlot: String, date: Date) -> some View {
+          let isAlreadyRegistered = viewModel.isUserAlreadyRegistered(timeSlot: timeSlot, date: date)
+
+          return Text(timeSlot)
+              .font(isAlreadyRegistered ? .subheadline.italic() : .subheadline)
+              .foregroundColor(isAlreadyRegistered ? .gray : .primary)
+              .frame(maxWidth: .infinity, alignment: .center)
+              .overlay(
+                  RoundedRectangle(cornerRadius: 10)
+                      .stroke(Color.gray, lineWidth: 0)
+                      .frame(height: 40)
+              )
+              .padding(.bottom, 36)
+              .contentShape(Rectangle()) // Ajoute une forme de contenu pour rendre le texte cliquable
+              .onTapGesture {
+                  if !isAlreadyRegistered {
+                      viewModel.postInscription(timeSlot: timeSlot, date: date) { result in
+                        switch result {
+                            case .success:
+                                  alertMessage = "Inscription réussie !"
+                                  showAlert = true
+                            case .failure(let error):
+                                  alertMessage = "Erreur lors de l'inscription : \(error.localizedDescription)"
+                                  showAlert = true
+                            }
+                      }
+                  }
+              }
+      }
+
+
 
 
         var body: some View {
@@ -84,8 +112,13 @@ struct InscriptionCreneauView: View {
               } else {
                   Text("Chargement...")
               }
-              
+            Spacer()
             }
+          .alert(isPresented: $showAlert) {
+              Alert(title: Text("Inscription"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+          }
+          .edgesIgnoringSafeArea(.top)
+          
         }
 }
 
