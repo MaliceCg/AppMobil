@@ -30,32 +30,48 @@ struct ActivitesView: View {
                     Text("Activites")
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
                         ForEach(viewModel.state.inscription, id: \.self) { inscription in
-                            InscriptionSquareView(inscription: inscription)
+                            InscriptionSquareView(inscription: inscription, viewModel: viewModel)
                         }
+
                     }
                 }
             }
             Spacer()
         }
+        .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
         .edgesIgnoringSafeArea(.top)
         .onAppear {
-            viewModel.send(.fetchInscription) // Récupérez les inscriptions lorsque la vue apparaît
+            viewModel.send(intent: .fetchPostes) // Récupérez les posts lorsque la vue apparaît
         }
     }
 }
-
 struct InscriptionSquareView: View {
     let inscription: Inscription
-
+    @ObservedObject var viewModel: ActiviteViewModel
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("idPoste: \(inscription.idPoste)")
-                .font(.headline)
+            if let post = viewModel.state.posts.first(where: { $0.idPoste == inscription.idPoste }) {
+                Text("\(post.nomPoste)")
+                    .font(.headline)
+            }
             HStack {
                 Text("Creneau: \(inscription.Creneau)")
                 Spacer()
-                Text("Jour: \(inscription.Jour)")
+                if let zone = viewModel.state.zones.first(where: { $0.idZoneBenevole == inscription.idZoneBenevole }) {
+                    Text("Zone: \(zone.nomZoneBenevole)")
+                }
             }
+            if let post = viewModel.state.posts.first(where: { $0.idPoste == inscription.idPoste }) {
+                Text("Description: \(post.description)")
+            }
+            // Afficher les identifiants des bénévoles pour chaque poste
+            if let referentRelations = viewModel.state.referentRelation.filter({ $0.idPoste == inscription.idPoste }) {
+                let benevoleIds = referentRelations.map({ $0.idBenevole })
+                ForEach(benevoleIds, id: \.self) { benevoleId in
+                    Text("Bénévole ID: \(benevoleId)")
+                }
+            }
+
         }
         .padding()
         .background(Color.white)

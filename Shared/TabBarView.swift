@@ -41,8 +41,7 @@ struct TabBarView: View {
                     Image(systemName: "person.crop.circle.badge.plus")
                     Text("Inscription")
                 }
-
-            ActivitesView(festivalId: $festivalId, viewModel: ActiviteViewModel())
+            ActivitesView(festivalId: $festivalId, viewModel: ActiviteViewModel(idFestival: festivalId))
                 .tag(Tab.activites)
                 .tabItem {
                     Image(systemName: "gamecontroller")

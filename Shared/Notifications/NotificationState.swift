@@ -12,3 +12,4 @@ struct NotificationState {
     var idFestival: Int = 0
     var loading: Bool = true
 }
+
