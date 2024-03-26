@@ -9,6 +9,9 @@ import SwiftUI
 struct AccueilView: View {
     @State private var festivals: [Festival] = []
     @State private var selectedFestivalId : FestivalID? //oblige d'etre optionnel pour le depart avant le choix
+    @State private var selectedFestival : Festival?
+
+    
 
 
     var body: some View {
@@ -22,6 +25,8 @@ struct AccueilView: View {
                     List(festivals) { festival in
                         Button(action: {
                             self.selectedFestivalId = FestivalID(id: festival.id)
+                            self.selectedFestival = festival
+                          
                         }) {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -37,8 +42,8 @@ struct AccueilView: View {
                         }
                     }
                     .listStyle(PlainListStyle())
-                    if let selectedFestivalId = selectedFestivalId {
-                                            NavigationLink(destination: TabBarView(festivalId: selectedFestivalId), isActive: Binding<Bool>(
+                    if let selectedFestivalId = selectedFestivalId, let selectedFestival = selectedFestival {
+                        NavigationLink(destination: TabBarView(festivalId: selectedFestivalId, festival: selectedFestival), isActive: Binding<Bool>(
                                                 get: { selectedFestivalId != nil },
                                                 set: { _ in }
                                             )) {

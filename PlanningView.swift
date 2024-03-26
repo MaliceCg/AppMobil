@@ -124,7 +124,6 @@ struct PlanningView: View {
              } else {
                  Text("Chargement...")
              }
-
              Spacer()
 
          }

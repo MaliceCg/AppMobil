@@ -8,6 +8,8 @@
 import SwiftUI
 struct TabBarView: View {
     @State var festivalId: FestivalID
+    @State var festival: Festival
+    @State private var isInscriptionCreneauViewActive = false
 
     var body: some View {
         TabView {
@@ -27,7 +29,7 @@ struct TabBarView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId))
+            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive)
                 .tabItem {
                     Image(systemName: "person.crop.circle.badge.plus")
                     Text("Inscription")
