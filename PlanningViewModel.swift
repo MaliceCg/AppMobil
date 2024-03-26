@@ -19,7 +19,7 @@ class PlanningViewModel: ObservableObject{
   
   let url: String = "https://awi-api-2.onrender.com/"
   
-  let userId = 1
+  let userId = UserDefaults.standard.integer(forKey: "id")
   let userRole = "user"
   
   @Published var idFestival: FestivalID
