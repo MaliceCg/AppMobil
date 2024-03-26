@@ -88,7 +88,7 @@ struct InscriptionSquareView: View {
             }
             Button(action: {
                             // Appelez la fonction unsubscribe du viewModel
-                            viewModel.send(intent: .unsubscribe(inscription.idPoste, inscription.idZoneBenevole, inscription.Creneau, inscription.Jour))
+                viewModel.send(intent: .unsubscribe(inscription.idPoste, inscription.idZoneBenevole ?? 0, inscription.Creneau, inscription.Jour))
                         }) {
                             Text("Se désinscrire")
                                 .font(.caption) // Utilisez une police plus petite

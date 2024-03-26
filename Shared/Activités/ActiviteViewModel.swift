@@ -96,9 +96,19 @@ class ActiviteViewModel: ObservableObject {
                 var posts = [Position]()
                 var zones = [Zone]() // Nouvel état pour stocker les zones
                 var referentRelations = [RefRelation]() // Nouvel état pour stocker les relations référents-postes
+
+                let group = DispatchGroup() // Créer un groupe de tâches
+
                 for inscription in filteredInscriptions {
+                    group.enter() // Ajouter une tâche au groupe
+                    print(inscription)
+
                     let postUrl = URL(string: "https://awi-api-2.onrender.com/position-module/\(inscription.idPoste)")!
                     let postTask = URLSession.shared.dataTask(with: postUrl) { (postData, postResponse, postError) in
+                        defer {
+                            group.leave() // Retirer la tâche du groupe lorsqu'elle est terminée
+                        }
+
                         if let postError = postError {
                             print("Error fetching post details: \(postError)")
                             return
@@ -116,32 +126,39 @@ class ActiviteViewModel: ObservableObject {
                                 self.state.posts = posts // Mettez à jour state.posts ici
                                 print(self.state.posts)
                             }
+                            // Vérifier si inscription.idZoneBenevole n'est pas nil avant de continuer
+                            if let idZoneBenevole = inscription.idZoneBenevole {
+                                print(idZoneBenevole)
+                                // Fetch zone details for each inscription
 
-                            // Fetch zone details for each inscription
-                            let zoneUrl = URL(string: "https://awi-api-2.onrender.com/volunteer-area-module/\(inscription.idZoneBenevole)")!
-                            let zoneTask = URLSession.shared.dataTask(with: zoneUrl) { (zoneData, zoneResponse, zoneError) in
-                                if let zoneError = zoneError {
-                                    print("Error fetching zone details: \(zoneError)")
-                                    return
-                                }
-
-                                guard let zoneData = zoneData else {
-                                    print("No zone data received")
-                                    return
-                                }
-
-                                do {
-                                    let decodedZone = try JSONDecoder().decode(Zone.self, from: zoneData)
-                                    DispatchQueue.main.async {
-                                        zones.append(decodedZone)
-                                        self.state.zones = zones // Mettez à jour state.zones ici
-                                        print(self.state.zones)
+                                let zoneUrl = URL(string: "https://awi-api-2.onrender.com/volunteer-area-module/\(idZoneBenevole)")!
+                                let zoneTask = URLSession.shared.dataTask(with: zoneUrl) { (zoneData, zoneResponse, zoneError) in
+                                    if let zoneError = zoneError {
+                                        print("Error fetching zone details: \(zoneError)")
+                                        return
                                     }
-                                } catch {
-                                    print("Error decoding zone data: \(error)")
+
+                                    guard let zoneData = zoneData else {
+                                        print("No zone data received")
+                                        return
+                                    }
+
+                                    do {
+                                        let decodedZone = try JSONDecoder().decode(Zone.self, from: zoneData)
+                                        DispatchQueue.main.async {
+                                            zones.append(decodedZone)
+                                            self.state.zones = zones // Mettez à jour state.zones ici
+                                            print(self.state.zones)
+                                        }
+                                    } catch {
+                                        print("Error decoding zone data: \(error)")
+                                    }
                                 }
+                                zoneTask.resume()
+                            } else {
+                                print("inscription.idZoneBenevole est nil")
                             }
-                            zoneTask.resume()
+
 
                             // Fetch referent relations for each post
                             let referentRelationUrl = URL(string: "https://awi-api-2.onrender.com/referent-module/position/\(inscription.idPoste)")!
@@ -175,7 +192,7 @@ class ActiviteViewModel: ObservableObject {
                     postTask.resume()
                 }
 
-                DispatchQueue.main.async {
+                group.notify(queue: .main) { // Attendre que toutes les tâches du groupe soient terminées
                     self.state.inscription = filteredInscriptions
                     self.state.loading = false
                 }
@@ -186,6 +203,7 @@ class ActiviteViewModel: ObservableObject {
 
         task.resume()
     }
+
 
  func fetchReferentDetails(benevoleId: Int, completion: @escaping (User?) -> Void) {
         guard let url = URL(string: "https://awi-api-2.onrender.com/authentication-module/\(benevoleId)") else {
