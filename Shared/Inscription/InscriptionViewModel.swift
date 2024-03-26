@@ -12,12 +12,19 @@ class InscriptionViewModel: ObservableObject{
     
   @Published var state = InscriptionState()
   
+  @Published var selectedPosition: Position?
+  
   let url: String = "https://awi-api-2.onrender.com/"
   
   @Published var idFestival: FestivalID
+  @Published var festival : Festival
   
-  init(idFestival: FestivalID) {
+  var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
+  
+  
+  init(idFestival: FestivalID, festival: Festival) {
       self.idFestival = idFestival
+      self.festival = festival
   }
   
   private var inscriptionIntent: InscriptionIntent?
@@ -29,8 +36,12 @@ class InscriptionViewModel: ObservableObject{
       case .fetchPositionFestival:
         fetchPositionsData()
         fetchEmployerData()
-        getPositionsForFestival() 
+        getPositionsForFestival()
+      
+      case .navigateToInscriptionCreneauView:
+        print("Coucou")
     }
+    
     
   }
   
