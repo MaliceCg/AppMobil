@@ -20,8 +20,9 @@ class ActiviteViewModel: ObservableObject {
             fetchPostes()
         case .fetchInscription:
             fetchInscription()
-        case .unsubscribe(_, _, _, _):
-            unsubscribe()
+        case .unsubscribe(let inscriptionId, let idZoneBenevole, let creneau, let jour):
+                    unsubscribe(inscriptionId: inscriptionId, idZoneBenevole: idZoneBenevole, creneau: creneau, jour: jour)
+                
             
         }
     }
@@ -50,6 +51,7 @@ class ActiviteViewModel: ObservableObject {
                     self.state.postes = decodedPostes
                     self.state.loading = false
                     self.send(intent: .fetchInscription)
+                    
                 }
             } catch {
                 print("Erreur lors du décodage des données : \(error)")
@@ -220,5 +222,39 @@ class ActiviteViewModel: ObservableObject {
     }
 
 
-    private func unsubscribe() {}
+    private func unsubscribe(inscriptionId: Int, idZoneBenevole: Int, creneau: String, jour: String) {
+            Task {
+                do {
+                    let userId = UserDefaults.standard.string(forKey: "id") ?? ""
+                    let url = URL(string: "https://awi-api-2.onrender.com/inscription-module/delete")!
+                    var request = URLRequest(url: url)
+                    request.httpMethod = "DELETE"
+                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+                    let parameters: [String: Any] = [
+                        "idBenevole": userId,
+                        "idPoste": inscriptionId,
+                        "idZoneBenevole": idZoneBenevole,
+                        "Jour": jour,
+                        "Creneau": creneau
+                    ]
+
+                    request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+
+                    let (_, response) = try await URLSession.shared.data(for: request)
+
+                    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                        print("Désinscription réussie")
+                        
+                        if let index = state.inscription.firstIndex(where: { $0.idPoste == inscriptionId }) {
+                            state.inscription.remove(at: index)
+                        }
+                    } else {
+                        print("Echec de la désinscription")
+                    }
+                } catch {
+                    print("Erreur lors de la désinscription : \(error)")
+                }
+            }
+        }
 }

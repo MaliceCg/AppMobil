@@ -10,5 +10,6 @@ enum ActiviteIntent {
     case fetchPostes
     case fetchInscription
     //case setSelectedPoste(String)
-    case unsubscribe(String, String, String, String)
+
+    case unsubscribe(Int, Int, String, String)
 }
