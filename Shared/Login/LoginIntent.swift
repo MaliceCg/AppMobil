@@ -10,5 +10,4 @@ enum LoginIntent {
     case enteredEmail(String)
     case enteredPassword(String)
     case submitTapped
-    
 }

@@ -102,7 +102,6 @@ struct HeaderView: View {
             do {
                 let decodedFestivals = try JSONDecoder().decode([Festival].self, from: data)
                 DispatchQueue.main.async {
-                    print(decodedFestivals)
                     self.festivals = decodedFestivals
                 }
             } catch {

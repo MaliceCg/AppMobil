@@ -12,12 +12,22 @@ class InscriptionViewModel: ObservableObject{
     
   @Published var state = InscriptionState()
   
+  @Published var selectedPosition: Position?
+  @Published var inscriptionUser: [Inscription]?
+  
   let url: String = "https://awi-api-2.onrender.com/"
+  let userId = UserDefaults.standard.integer(forKey: "id")
+
   
   @Published var idFestival: FestivalID
+  @Published var festival : Festival
   
-  init(idFestival: FestivalID) {
+  var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
+  
+  
+  init(idFestival: FestivalID, festival: Festival) {
       self.idFestival = idFestival
+      self.festival = festival
   }
   
   private var inscriptionIntent: InscriptionIntent?
@@ -29,8 +39,12 @@ class InscriptionViewModel: ObservableObject{
       case .fetchPositionFestival:
         fetchPositionsData()
         fetchEmployerData()
-        getPositionsForFestival() 
+        getPositionsForFestival()
+      
+      case .navigateToInscriptionCreneauView:
+        fetchUserInscription()
     }
+    
     
   }
   
@@ -56,7 +70,6 @@ class InscriptionViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let decodedPositions = try decoder.decode([Position].self, from: data)
-              print("data2 : ", decodedPositions)
               DispatchQueue.main.async {
                   self.state.positions = decodedPositions
               }
@@ -74,7 +87,6 @@ class InscriptionViewModel: ObservableObject{
           print("Invalid URL")
           return
       }
-      print("Request : ", url)
       let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
           if let error = error {
               print("Error: \(error)")
@@ -89,7 +101,6 @@ class InscriptionViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let employers = try decoder.decode([Employer].self, from: data)
-              print("data : ", employers)
               DispatchQueue.main.async {
                   self.state.employers = employers
                   self.getPositionsForFestival()
@@ -101,9 +112,41 @@ class InscriptionViewModel: ObservableObject{
 
       task.resume()
   }
+  
+  func fetchUserInscription(){
+    let urlInscription = "\(url)inscription-module/volunteer/\(userId)"
+      guard let url = URL(string: urlInscription) else {
+          print("Invalid URL")
+          return
+      }
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let inscriptionsUser = try decoder.decode([Inscription].self, from: data)
+              print("InscriptionUser : ", inscriptionsUser)
+              DispatchQueue.main.async {
+                  self.inscriptionUser = inscriptionsUser
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
 
   func getPositionsForFestival() {
-          // Filtre les positions employées par ce festival
+        // Filtre les positions employées par ce festival
     
       self.objectWillChange.send()
       self.state.filteredPositions = self.state.positions.filter { position in
@@ -112,6 +155,61 @@ class InscriptionViewModel: ObservableObject{
             }
         }
     }
+  
+  func postInscription(timeSlot: String, date: Date, completion: @escaping (Result<Bool, Error>) -> Void) {
+      let formatter = DateFormatter()
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+      let dateString = formatter.string(from: date)
+    
+
+      let inscriptionData: [String: Any] = [
+          "idBenevole": userId,
+          "idZoneBenevole": selectedPosition?.idPoste ?? 0,
+          "idPoste": selectedPosition?.idPoste ?? 0,
+          "Creneau": timeSlot,
+          "Jour": dateString,
+          "isPresent": false
+      ]
+
+      guard let url = URL(string: "\(url)inscription-module") else {
+          print("Invalid URL")
+          return
+      }
+
+      let jsonData = try? JSONSerialization.data(withJSONObject: inscriptionData)
+
+      var request = URLRequest(url: url)
+      request.httpMethod = "POST"
+      request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+      request.httpBody = jsonData
+
+      let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                return
+            }
+
+            do {
+                // ... (le reste du code de traitement de la réponse)
+
+                // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
+                DispatchQueue.main.async {
+                    completion(.success(true))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        task.resume()
+  }
+
+
   
   func getColorForPosition(position: Position) -> Color {
       switch position.nomPoste.lowercased() {
@@ -127,6 +225,22 @@ class InscriptionViewModel: ObservableObject{
           return Color(red: 0.9568627450980393, green: 0.7176470588235294, blue: 0.25098039215686274)
       }
   }
+
+  func isUserAlreadyRegistered(timeSlot: String, date: Date) -> Bool {
+      guard let inscriptionUser = inscriptionUser else { return false }
+
+      let formatter = DateFormatter()
+      formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+
+      let filteredInscriptions = inscriptionUser.filter { inscription in
+          let inscriptionDate = formatter.date(from: inscription.Jour)!
+          return inscription.Creneau == timeSlot && Calendar.current.isDate(inscriptionDate, inSameDayAs: date)
+      }
+
+      return !filteredInscriptions.isEmpty
+  }
+
+  
 
   
   

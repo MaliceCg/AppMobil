@@ -149,8 +149,6 @@ struct PlanningView: View {
                   }
     }
 
-
-
 }
 
 
