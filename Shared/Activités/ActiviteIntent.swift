@@ -8,7 +8,7 @@
 import Foundation
 enum ActiviteIntent {
     case fetchPostes
-    case fetchActivites
+    case fetchInscription
     case setSelectedPoste(String)
     case unsubscribe(String, String, String, String)
 }

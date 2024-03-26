@@ -7,7 +7,7 @@
 
 import Foundation
 struct ActiviteState {
-   
+    var inscription: [Inscription]=[]
     var postes: [Position] = []
     var selectedPoste: String = ""
     var hasActivities: Bool = false

@@ -7,11 +7,13 @@
 
 import Foundation
 
-struct Inscription: Codable{
+struct Inscription: Codable, Hashable {
       let idBenevole: Int
       let idZoneBenevole: Int?
       let idPoste: Int
       let Creneau: String
       let Jour: String
       let isPresent: Bool
+    
+    
 }

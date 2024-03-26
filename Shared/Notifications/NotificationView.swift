@@ -20,7 +20,7 @@ struct NotificationView: View {
     var body: some View {
         VStack {
             HeaderView(selectedFestivalId: $festivalId, currentPage: $currentPage)
-            Text("Festival ID : \(festivalId.id)")
+           
             if viewModel.state.loading {
                 ProgressView()
             } else {
@@ -30,7 +30,7 @@ struct NotificationView: View {
                         Text("Soirée Découverte")
                             .font(.headline)
                         ForEach(soiréeDécouverteNotifs, id: \.idNotif) { notif in
-                            NotificationRowView(notif: notif)
+                            NotificationBubbleView(notif: notif)
                         }
                     }
 
@@ -38,7 +38,7 @@ struct NotificationView: View {
                         .font(.headline)
 
                     ForEach(viewModel.state.listNotif.filter({ $0.Typee != "Soirée Découverte" }), id: \.idNotif) { notif in
-                        NotificationRowView(notif: notif)
+                        NotificationBubbleView(notif: notif)
                     }
                 }
             }
@@ -48,14 +48,23 @@ struct NotificationView: View {
     }
 }
 
-struct NotificationRowView: View {
+struct NotificationBubbleView: View {
     let notif: Notifications
+
+    var gradient: LinearGradient {
+        LinearGradient(gradient: Gradient(colors: [.white, Color(.sRGB, white: 0.95, opacity: 1)]), startPoint: .top, endPoint: .bottom)
+    }
 
     var body: some View {
         HStack {
             Text(notif.TexteNotification)
+                .padding()
+                .background(
+                    gradient
+                        .cornerRadius(16)
+                )
+                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
             Spacer()
-
         }
     }
 }
