@@ -112,30 +112,24 @@ struct PlanningView: View {
             LinearGradient(gradient: Gradient(colors: [.white, Color(.sRGB, white: 0.95, opacity: 1)]), startPoint: .top, endPoint: .bottom)
         }
     
-   
-    
 
+    var body: some View {
+        VStack {
+            HeaderView(selectedFestivalId: $festivalId, currentPage: $currentPage)
 
-
-
-
-
-
-var body: some View {
-  
-    VStack {
-      
-        HeaderView(selectedFestivalId: $festivalId,currentPage: $currentPage )
-        
-        if let festival = viewModel.state.festival {
-            Text(festival.nomFestival)
-                .font(.largeTitle)
-            HStack(spacing: 0) {
+            if let festival = viewModel.state.festival {
+                Text(festival.nomFestival)
+                    .font(.largeTitle)
+                VStack {
+                HStack(spacing: 0) {
                     buildDaysView(for: festival)
                 }
-                .padding(.horizontal, 16)
-                .frame(maxWidth: 350, maxHeight: 400)
-                .padding(.horizontal, 16)
+                HStack {
+                    buildLegendView()
+                }
+                }
+                .frame(maxWidth: 400, maxHeight: 450)
+                
                 .background(
                     gradient
                         .cornerRadius(16)
@@ -143,19 +137,20 @@ var body: some View {
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
                
             } else {
-               ProgressView()
+                ProgressView()
             }
+
+            Spacer()
         }
         .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
         .edgesIgnoringSafeArea(.top)
-      
+        .onAppear {
+                    viewModel.send(intent: .fetchFestivalData)
+                  }
     }
-   
-    
+
+
+
 }
-
-
-
-
 
 
