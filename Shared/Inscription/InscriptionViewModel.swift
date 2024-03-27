@@ -22,6 +22,8 @@ class InscriptionViewModel: ObservableObject{
   @Published var inscriptionUser: [Inscription]?
   @Published var games: [Game]?
   
+  @Published var zoneInscriptionCount: [Int: Int] = [:]
+  
   let url: String = "https://awi-api-2.onrender.com/"
   let userId = UserDefaults.standard.integer(forKey: "id")
 
@@ -283,7 +285,6 @@ class InscriptionViewModel: ObservableObject{
       }
 
       let urlString = "\(url)volunteer-area-module/\(idFestival.id)/\(selectedPosition.idPoste)"
-    
 
       guard let url = URL(string: urlString) else {
           print("Invalid URL")
@@ -304,8 +305,24 @@ class InscriptionViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let decodedZones = try decoder.decode([Zone].self, from: data)
-              DispatchQueue.main.async {
-                  self.zones = decodedZones
+            
+              self.zones = decodedZones
+            
+              var zoneInscriptionCount: [Int: Int] = [:]
+
+              // Parcourir les zones et récupérer le nombre d'inscrits pour chaque zone
+              for zone in decodedZones {
+                  self.fetchInscriptionCount(zoneId: zone.idZoneBenevole) { count in
+                      zoneInscriptionCount[zone.idZoneBenevole] = count
+
+                      // Vérifier si toutes les zones ont été traitées
+                      if zoneInscriptionCount.count == decodedZones.count {
+                          // Mettre à jour la propriété zoneInscriptionCount du ViewModel
+                          DispatchQueue.main.async {
+                              self.zoneInscriptionCount = zoneInscriptionCount
+                          }
+                      }
+                  }
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -315,6 +332,41 @@ class InscriptionViewModel: ObservableObject{
       task.resume()
   }
   
+  func fetchInscriptionCount(zoneId: Int, completion: @escaping (Int) -> Void) {
+      let urlString = "\(url)inscription-module/zone/\(zoneId)"
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedInscriptions = try decoder.decode([Inscription].self, from: data)
+
+              // Renvoie le nombre d'inscrits pour cette zone
+              completion(decodedInscriptions.count)
+          } catch {
+              print("Error decoding response: \(error)")
+              completion(0)
+          }
+      }
+
+      task.resume()
+  }
+
+
   func fetchGamesForZone(idZone: Int) {
       let urlString = "\(url)game-module/zoneBenevole/\(idZone)"
 

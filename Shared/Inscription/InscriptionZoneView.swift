@@ -24,29 +24,40 @@ struct InscriptionZoneView: View {
                 .font(.system (size:20))
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            ScrollView {
-                LazyVStack {
-                    if let zones = viewModel.zones {
-                        ForEach(zones) { zone in
-                            Button(action: {
-                                self.selectedZone = zone
-                            }) {
-                                Text(zone.nomZoneBenevole)
-                                    .font(.system(size: 22))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 280, height: 70)
-                                    .background(Color(red: 0.06274509803921569, green: 0.3607843137254902, blue: 0.6235294117647059))
-                                    .cornerRadius(10)
-                            }
-                            .sheet(item: $selectedZone) { zone in
-                              ZoneDetailView(viewModel: viewModel, zone: zone, isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
-                            }
-                        }
-                    }
-                }
-                .padding()
-            }
+              ScrollView {
+                  LazyVStack {
+                      if let zones = viewModel.zones {
+                          ForEach(zones) { zone in
+                              Button(action: {
+                                  self.selectedZone = zone
+                              }) {
+                                  Text(zone.nomZoneBenevole)
+                                      .font(.system(size: 22))
+                                      .foregroundColor(.white)
+                                      .padding()
+                                      .frame(width: 280, height: 70)
+                                      .background(Color(red: 0.06274509803921569, green: 0.3607843137254902, blue: 0.6235294117647059))
+                                      .cornerRadius(10)
+                                      .overlay(
+                                          // Ajoutez la jauge ici
+                                          Group {
+                                              if let count = viewModel.zoneInscriptionCount[zone.idZoneBenevole], let capacity = zone.capacite {
+                                                  ProgressView(value: Double(count) / Double(capacity))
+                                                      .progressViewStyle(LinearProgressViewStyle(tint: .white))
+                                                      .padding()
+                                                      .offset(y: 20)
+                                              }
+                                          }
+                                      )
+                              }
+                              .sheet(item: $selectedZone) { zone in
+                                ZoneDetailView(viewModel: viewModel, zone: zone, isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
+                              }
+                          }
+                      }
+                  }
+                  .padding()
+              }
 
             Spacer()
         }
