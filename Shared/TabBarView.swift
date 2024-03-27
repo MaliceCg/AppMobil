@@ -12,8 +12,10 @@ struct TabBarView: View {
     @State var festivalId: FestivalID
     @State var festival: Festival
     @State private var isInscriptionCreneauViewActive = false
+    @State private var isInscriptionZoneViewActive = false
     @State private var selectedTab = Tab.dashboard
-
+    @StateObject var planningViewModel: PlanningViewModel
+  
     var body: some View {
         TabView(selection: $selectedTab) {
             NotificationView(festivalId: $festivalId, viewModel: NotificationViewModel(idFestival: festivalId))
@@ -23,20 +25,20 @@ struct TabBarView: View {
                     Text("Notifications")
                 }
 
-            PlanningView(festivalId: $festivalId, viewModel: PlanningViewModel(idFestival: festivalId))
+            PlanningView(festivalId: $festivalId, viewModel: planningViewModel)
                 .tag(Tab.planning)
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Planning")
                 }
 
-            DashboardView(selectedFestivalId: $festivalId)
+          DashboardView(selectedFestivalId: $festivalId, viewModel: planningViewModel)
                 .tag(Tab.dashboard)
                 .tabItem {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive)
+            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
                 .tag(Tab.inscription)
                 .tabItem {
                     Image(systemName: "person.crop.circle.badge.plus")
@@ -49,11 +51,6 @@ struct TabBarView: View {
                     Text("Activités")
                 }
         }
-//        .onChange(of: selectedTab) { newTab in
-//            if newTab == Tab.inscription {
-//                isInscriptionCreneauViewActive = false
-//              }
-//        }
     }
   
 }

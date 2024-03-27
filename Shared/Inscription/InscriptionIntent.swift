@@ -10,4 +10,5 @@ import Foundation
 enum InscriptionIntent {
   case fetchPositionFestival
   case navigateToInscriptionCreneauView
+  case navigateToInscriptionZoneView
 }

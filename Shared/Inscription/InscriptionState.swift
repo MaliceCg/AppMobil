@@ -8,7 +8,5 @@
 import Foundation
 
 class InscriptionState: ObservableObject {
-  @Published var positions: [Position] = []
-  @Published var employers: [Employer] = []
-  @Published var filteredPositions: [Position] = []
+  
 }

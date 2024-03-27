@@ -86,6 +86,7 @@ struct InscriptionSquareView: View {
                     Text("Bénévole ID: \(benevoleId)")
                 }
             }
+          
             Button(action: {
                             // Appelez la fonction unsubscribe du viewModel
                 viewModel.send(intent: .unsubscribe(inscription.idPoste, inscription.idZoneBenevole ?? 0, inscription.Creneau, inscription.Jour))

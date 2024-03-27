@@ -14,6 +14,7 @@
 		554891AF2BA48A4500496CB0 /* EmployerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554891AE2BA48A4500496CB0 /* EmployerModel.swift */; };
 		554891B12BA49B1300496CB0 /* InscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554891B02BA49B1300496CB0 /* InscriptionModel.swift */; };
 		554CA5BB2BB32ADD00EA238E /* InscriptionZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554CA5BA2BB32ADD00EA238E /* InscriptionZoneView.swift */; };
+		5553D4862BB40DCE00A54683 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5553D4852BB40DCE00A54683 /* GameModel.swift */; };
 		559E00E72BB2270B00ED251E /* InscriptionCreneauView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559E00E62BB2270B00ED251E /* InscriptionCreneauView.swift */; };
 		559E00E92BB228A200ED251E /* InscriptionPosteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559E00E82BB228A100ED251E /* InscriptionPosteView.swift */; };
 		55F715B72BA38FF100B604BC /* PlanningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F715B62BA38FF100B604BC /* PlanningState.swift */; };
@@ -87,6 +88,7 @@
 		554891AE2BA48A4500496CB0 /* EmployerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployerModel.swift; sourceTree = "<group>"; };
 		554891B02BA49B1300496CB0 /* InscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InscriptionModel.swift; sourceTree = "<group>"; };
 		554CA5BA2BB32ADD00EA238E /* InscriptionZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InscriptionZoneView.swift; sourceTree = "<group>"; };
+		5553D4852BB40DCE00A54683 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		559E00E62BB2270B00ED251E /* InscriptionCreneauView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InscriptionCreneauView.swift; sourceTree = "<group>"; };
 		559E00E82BB228A100ED251E /* InscriptionPosteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InscriptionPosteView.swift; sourceTree = "<group>"; };
 		55F715B62BA38FF100B604BC /* PlanningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanningState.swift; sourceTree = SOURCE_ROOT; };
@@ -204,6 +206,7 @@
 				C2C0A3D72BA8CF5600351A4B /* ProfileView.swift */,
 				C2C0A3DD2BA9DC2200351A4B /* ActiviteModel.swift */,
 				C2C0A3E52BA9E47500351A4B /* NotificationsModel.swift */,
+				5553D4852BB40DCE00A54683 /* GameModel.swift */,
 				C28C4C1C2BB3032E0023A4C0 /* Tab.swift */,
 				C28C4C1E2BB324680023A4C0 /* ZoneModel.swift */,
 				C28C4C202BB3269A0023A4C0 /* RefRelationModel.swift */,
@@ -494,6 +497,7 @@
 				C2C0A3CC2BA604D800351A4B /* NotificationView.swift in Sources */,
 				55F715B72BA38FF100B604BC /* PlanningState.swift in Sources */,
 				554891AF2BA48A4500496CB0 /* EmployerModel.swift in Sources */,
+				5553D4862BB40DCE00A54683 /* GameModel.swift in Sources */,
 				55015D042BA9E1F500148F34 /* InscriptionIntent.swift in Sources */,
 				C2C0A3DA2BA9DAED00351A4B /* ActiviteState.swift in Sources */,
 				C28C4C212BB3269A0023A4C0 /* RefRelationModel.swift in Sources */,
