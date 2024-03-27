@@ -86,20 +86,21 @@ struct InscriptionSquareView: View {
                     Text("Bénévole ID: \(benevoleId)")
                 }
             }
-//            Button(action: {
-//                            // Appelez la fonction unsubscribe du viewModel
-//                            viewModel.send(intent: .unsubscribe(inscription.idPoste, inscription.idZoneBenevole, inscription.Creneau, inscription.Jour))
-//                        }) {
-//                            Text("Se désinscrire")
-//                                .font(.caption) // Utilisez une police plus petite
-//                                .foregroundColor(.white)
-//                                .padding(.horizontal, 8) // Réduisez le padding horizontal
-//                                .padding(.vertical, 4) // Réduisez le padding vertical
-//                                .background(Color.gray) // Changez la couleur de fond en gris
-//                                .cornerRadius(10)
-//                        }
-//                        .frame(maxWidth: .infinity, alignment: .trailing) // Alignez le bouton à droite
-//
+          
+            Button(action: {
+                            // Appelez la fonction unsubscribe du viewModel
+                viewModel.send(intent: .unsubscribe(inscription.idPoste, inscription.idZoneBenevole ?? 0, inscription.Creneau, inscription.Jour))
+                        }) {
+                            Text("Se désinscrire")
+                                .font(.caption) // Utilisez une police plus petite
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8) // Réduisez le padding horizontal
+                                .padding(.vertical, 4) // Réduisez le padding vertical
+                                .background(Color.gray) // Changez la couleur de fond en gris
+                                .cornerRadius(10)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing) // Alignez le bouton à droite
+                    
         }
         .padding()
         .frame(maxWidth:350)
