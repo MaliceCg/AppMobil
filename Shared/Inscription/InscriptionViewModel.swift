@@ -12,21 +12,31 @@ class InscriptionViewModel: ObservableObject{
     
   @Published var state = InscriptionState()
   
-  @Published var selectedPosition: Position?
-  @Published var inscriptionUser: [Inscription]?
+  @Published var idFestival: FestivalID
+  @Published var festival : Festival
+  
+  @Published var positions: [Position] = []
+  @Published var employers: [Employer] = []
+  @Published var filteredPositions: [Position] = []
+  @Published var selectedPosition: Position? = nil
+  @Published var flexiblePosition: [Position]? = []
+  @Published var zoneSelected: Zone? = nil
+  @Published var zones: [Zone]? = []
+  @Published var inscriptions: [Inscription]? = []
+  @Published var inscriptionUser: [Inscription]? = []
+  @Published var games: [Game]? = []
+  
+  @Published var zoneInscriptionCount: [Int: Int] = [:]
   
   let url: String = "https://awi-api-2.onrender.com/"
   let userId = UserDefaults.standard.integer(forKey: "id")
-
-  
-  @Published var idFestival: FestivalID
-  @Published var festival : Festival
   
   var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
   
   
   init(idFestival: FestivalID, festival: Festival) {
       self.idFestival = idFestival
+      print("ID FESTIVAL ", idFestival)
       self.festival = festival
   }
   
@@ -43,10 +53,31 @@ class InscriptionViewModel: ObservableObject{
       
       case .navigateToInscriptionCreneauView:
         fetchUserInscription()
+      
+      case .navigateToInscriptionZoneView:
+        fetchZonePoste()
     }
     
     
   }
+  
+  func getInscriptionCount(timeSlot: String, date: Date, postId: Int) -> Int? {
+      guard let inscriptions = self.inscriptions else {
+          // Les inscriptions ne sont pas disponibles, renvoyer nil
+          return 0
+      }
+
+      let formatter = ISO8601DateFormatter()
+      formatter.formatOptions = [.withFullDate, .withTimeZone]
+    
+      let filteredInscriptions = inscriptions.filter { inscription in
+          return inscription.idPoste == postId &&
+            inscription.Creneau == timeSlot
+      }    
+      return filteredInscriptions.count
+  }
+
+
   
   func fetchPositionsData() {
       let url = "\(url)position-module"
@@ -71,7 +102,7 @@ class InscriptionViewModel: ObservableObject{
               let decoder = JSONDecoder()
               let decodedPositions = try decoder.decode([Position].self, from: data)
               DispatchQueue.main.async {
-                  self.state.positions = decodedPositions
+                  self.positions = decodedPositions
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -102,7 +133,7 @@ class InscriptionViewModel: ObservableObject{
               let decoder = JSONDecoder()
               let employers = try decoder.decode([Employer].self, from: data)
               DispatchQueue.main.async {
-                  self.state.employers = employers
+                  self.employers = employers
                   self.getPositionsForFestival()
               }
           } catch {
@@ -132,10 +163,14 @@ class InscriptionViewModel: ObservableObject{
 
           do {
               let decoder = JSONDecoder()
-              let inscriptionsUser = try decoder.decode([Inscription].self, from: data)
-              print("InscriptionUser : ", inscriptionsUser)
+              let inscriptions = try decoder.decode([Inscription].self, from: data)
               DispatchQueue.main.async {
-                  self.inscriptionUser = inscriptionsUser
+                  self.inscriptions = inscriptions
+                
+                  let userInscriptions = inscriptions.filter { $0.idBenevole == self.userId }
+
+                  // Affecter les inscriptions de l'utilisateur actuel à self.inscriptionUser
+                  self.inscriptionUser = userInscriptions
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -146,11 +181,9 @@ class InscriptionViewModel: ObservableObject{
   }
 
   func getPositionsForFestival() {
-        // Filtre les positions employées par ce festival
-    
       self.objectWillChange.send()
-      self.state.filteredPositions = self.state.positions.filter { position in
-            self.state.employers.contains { employer in
+      self.filteredPositions = self.positions.filter { position in
+            self.employers.contains { employer in
                 employer.idPoste == position.idPoste
             }
         }
@@ -161,53 +194,235 @@ class InscriptionViewModel: ObservableObject{
       formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
       let dateString = formatter.string(from: date)
     
+      let inscriptionData: [String: Any]
+    
+      if let flexPosition = flexiblePosition {
+          for position in flexPosition {
+              let inscriptionData: [String: Any?] = [
+                  "idBenevole": userId,
+                  "idZoneBenevole": nil,
+                  "idPoste": position.idPoste,
+                  "Creneau": timeSlot,
+                  "Jour": dateString,
+                  "isPresent": false
+              ]
 
-      let inscriptionData: [String: Any] = [
+              guard let url = URL(string: "\(url)inscription-module") else {
+                  print("Invalid URL")
+                  continue
+              }
+
+              let jsonData = try? JSONSerialization.data(withJSONObject: inscriptionData)
+
+              var request = URLRequest(url: url)
+              request.httpMethod = "POST"
+              request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+              request.httpBody = jsonData
+
+              let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                  if let error = error {
+                      completion(.failure(error))
+                      return
+                  }
+
+                  guard let data = data else {
+                      completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                      return
+                  }
+
+                  do {
+                      // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
+                      DispatchQueue.main.async {
+                          completion(.success(true))
+                      }
+                  }
+              }
+
+              task.resume()
+          }
+      } else {
+
+
+      
+      if let zone = zoneSelected{
+        inscriptionData = [
+          "idBenevole": userId,
+          "idZoneBenevole": zone.idZoneBenevole,
+          "idPoste": selectedPosition?.idPoste ?? 0,
+          "Creneau": timeSlot,
+          "Jour": dateString,
+          "isPresent": false
+        ]
+      } else {
+        inscriptionData = [
           "idBenevole": userId,
           "idZoneBenevole": selectedPosition?.idPoste ?? 0,
           "idPoste": selectedPosition?.idPoste ?? 0,
           "Creneau": timeSlot,
           "Jour": dateString,
           "isPresent": false
-      ]
-
-      guard let url = URL(string: "\(url)inscription-module") else {
-          print("Invalid URL")
-          return
+        ]
       }
-
+      
+      
+      
+      guard let url = URL(string: "\(url)inscription-module") else {
+        print("Invalid URL")
+        return
+      }
+      
       let jsonData = try? JSONSerialization.data(withJSONObject: inscriptionData)
-
+      
       var request = URLRequest(url: url)
       request.httpMethod = "POST"
       request.setValue("application/json", forHTTPHeaderField: "Content-Type")
       request.httpBody = jsonData
-
+      
       let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let data = data else {
-                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
-                return
-            }
-
-            do {
-                // ... (le reste du code de traitement de la réponse)
-
-                // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
-                DispatchQueue.main.async {
-                    completion(.success(true))
-                }
-            } catch {
-                completion(.failure(error))
-            }
+        if let error = error {
+          completion(.failure(error))
+          return
         }
-
-        task.resume()
+        
+        guard let data = data else {
+          completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+          return
+        }
+        
+        do {
+          // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
+          DispatchQueue.main.async {
+            completion(.success(true))
+          }
+        }
+      }
+      
+      task.resume()
+    }
   }
+
+  func fetchZonePoste() {
+      guard let selectedPosition = selectedPosition else {
+          print("Selected position is nil")
+          return
+      }
+
+      let urlString = "\(url)volunteer-area-module/\(idFestival.id)/\(selectedPosition.idPoste)"
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedZones = try decoder.decode([Zone].self, from: data)
+            
+              self.zones = decodedZones
+            
+              var zoneInscriptionCount: [Int: Int] = [:]
+
+              // Parcourir les zones et récupérer le nombre d'inscrits pour chaque zone
+              for zone in decodedZones {
+                  self.fetchInscriptionCount(zoneId: zone.idZoneBenevole) { count in
+                      zoneInscriptionCount[zone.idZoneBenevole] = count
+
+                      // Vérifier si toutes les zones ont été traitées
+                      if zoneInscriptionCount.count == decodedZones.count {
+                          // Mettre à jour la propriété zoneInscriptionCount du ViewModel
+                          DispatchQueue.main.async {
+                              self.zoneInscriptionCount = zoneInscriptionCount
+                          }
+                      }
+                  }
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+  
+  func fetchInscriptionCount(zoneId: Int, completion: @escaping (Int) -> Void) {
+      let urlString = "\(url)inscription-module/zone/\(zoneId)"
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedInscriptions = try decoder.decode([Inscription].self, from: data)
+
+              // Renvoie le nombre d'inscrits pour cette zone
+              completion(decodedInscriptions.count)
+          } catch {
+              print("Error decoding response: \(error)")
+              completion(0)
+          }
+      }
+
+      task.resume()
+  }
+
+
+  func fetchGamesForZone(idZone: Int) {
+      let urlString = "\(url)game-module/zoneBenevole/\(idZone)"
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedGames = try decoder.decode([Game].self, from: data)
+              DispatchQueue.main.async {
+                  self.games = decodedGames
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+
 
 
   
@@ -239,9 +454,4 @@ class InscriptionViewModel: ObservableObject{
 
       return !filteredInscriptions.isEmpty
   }
-
-  
-
-  
-  
 }

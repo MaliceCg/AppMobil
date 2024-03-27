@@ -14,6 +14,10 @@ struct InscriptionPosteView: View {
     @State private var currentPage = "inscription"
     @State private var isLoading = true // Ajoute une propriété pour suivre l'état du chargement
     @Binding var isInscriptionCreneauViewActive: Bool
+    @Binding var isInscriptionZoneViewActive: Bool
+    @State private var isFlexibleSheetPresented = false
+  
+
 
     var body: some View {
         VStack {
@@ -26,12 +30,15 @@ struct InscriptionPosteView: View {
             if isLoading { // Affiche le texte "Chargement..." lorsque les données sont en cours de chargement
                 Text("Chargement...")
             } else { // Affiche les boutons lorsque les données sont chargées
-                if let positions = viewModel.state.filteredPositions {
+                if let positions = viewModel.filteredPositions {
                     ScrollView {
                         LazyVStack {
                             ForEach(positions) { position in
                                 Button(action: {
                                   if(position.nomPoste == "Animation Jeux"){
+                                    isInscriptionZoneViewActive = true
+                                    self.viewModel.selectedPosition = position
+                                    self.viewModel.send(intent: .navigateToInscriptionZoneView)
                                   } else {
                                     isInscriptionCreneauViewActive = true
                                     self.viewModel.selectedPosition = position
@@ -57,13 +64,16 @@ struct InscriptionPosteView: View {
                     .foregroundColor(.gray)
                     .underline()
                     .onTapGesture {
-                        // Action à effectuer lorsque le texte est pressé
+                      self.isFlexibleSheetPresented = true
                     }
                     .padding()
             }
 
             Spacer()
         }
+          .sheet(isPresented: $isFlexibleSheetPresented) { // Ajoute la méthode .sheet
+            FlexiblePosteView(viewModel: viewModel, isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive) // Remplacez par votre vue personnalisée
+          }
         .edgesIgnoringSafeArea(.top)
         .onAppear {
             viewModel.send(intent: .fetchPositionFestival)
@@ -74,5 +84,56 @@ struct InscriptionPosteView: View {
     }
 }
 
+struct FlexiblePosteView: View {
+    @ObservedObject var viewModel: InscriptionViewModel
+    @State private var selectedPostes: Set<Position> = [] // Ensemble des postes sélectionnés
+    @Binding var isInscriptionCreneauViewActive: Bool
 
+    var body: some View {
+        VStack {
+            
+            // Ajoutez cette vue Text ici
+            Text("Choisissez les postes sur lesquels vous souhaitez être flexibe : ")
+                .font(.headline)
+                .foregroundColor(.black)
+                .padding()
+          
+            Form {
+                ForEach(viewModel.filteredPositions.filter { $0.nomPoste != "Animation Jeux" }, id: \.self) { position in
+                    HStack {
+                        Text(position.nomPoste)
+                        Spacer()
+                        Toggle("", isOn: Binding<Bool>(
+                            get: { self.selectedPostes.contains(position) },
+                            set: { isOn in
+                                if isOn {
+                                    self.selectedPostes.insert(position)
+                                } else {
+                                    self.selectedPostes.remove(position)
+                                }
+                            }
+                        ))
+                    }
+                }
+            }
+            .padding()
 
+            Button(action: {
+              isInscriptionCreneauViewActive = true
+              self.viewModel.flexiblePosition = Array(self.selectedPostes)
+              self.viewModel.send(intent: .navigateToInscriptionCreneauView)
+            }) {
+                Text("Valider")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
+            .disabled(selectedPostes.isEmpty)
+            .opacity(selectedPostes.isEmpty ? 0.5 : 1.0)
+            .padding()
+        }
+    }
+}

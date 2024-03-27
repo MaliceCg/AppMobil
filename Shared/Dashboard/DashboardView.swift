@@ -9,13 +9,14 @@ import SwiftUI
 struct DashboardView: View {
     @Binding var selectedFestivalId: FestivalID
     @State private var currentPage = "dashboard"
+    @ObservedObject var viewModel: PlanningViewModel
 
     var body: some View {
         VStack {
             HeaderView(selectedFestivalId: $selectedFestivalId, currentPage: $currentPage)
              
             Text("Festival ID : \(selectedFestivalId.id)")
-            Text("Je suis Dashboard")
+            PlanningComponent(viewModel: viewModel)
                 .navigationBarBackButtonHidden(true)
             Spacer()
             
