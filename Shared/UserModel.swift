@@ -8,22 +8,17 @@
 
 import Foundation
 
-struct User: Codable, Hashable {
-    let idBenevole: Int
-    let pseudo: String
-    let nom: String
-    let prenom: String
-    let email: String
-    let password: String
-    let role: String
-    let tailletTShirt: String
-    let regime: String
-    let statutHebergement: String
-    let nombreEditionPrecedente: Int?
-    let adresse: String
-    let ville: String
-    let codePostal: Int?
-    let telephone: String
-    let jeuPrefere: String
-    let idAssociation: Int?
+struct User: Codable,Hashable {
+    var idBenevole: Int
+    var Pseudo: String
+    var Prenom: String?
+    var Nom: String?
+    var Email: String
+    var Adresse: String?
+    var Ville: String?
+    var Telephone: String?
+    var Regime: String?
+    var TailletTShirt: String?
+    var StatutHebergement: String?
+    var JeuPrefere: String?
 }
