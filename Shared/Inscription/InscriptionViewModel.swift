@@ -19,7 +19,7 @@ class InscriptionViewModel: ObservableObject{
   @Published var employers: [Employer] = []
   @Published var filteredPositions: [Position] = []
   @Published var selectedPosition: Position? = nil
-  @Published var flexiblePosition: [Position]? = []
+  @Published var flexiblePosition: [Position]? = nil
   @Published var zoneSelected: Zone? = nil
   @Published var zones: [Zone]? = []
   @Published var inscriptions: [Inscription]? = []
@@ -190,11 +190,10 @@ class InscriptionViewModel: ObservableObject{
     }
   
   func postInscription(timeSlot: String, date: Date, completion: @escaping (Result<Bool, Error>) -> Void) {
+    
       let formatter = DateFormatter()
       formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
       let dateString = formatter.string(from: date)
-    
-      let inscriptionData: [String: Any]
     
       if let flexPosition = flexiblePosition {
           for position in flexPosition {
@@ -241,64 +240,64 @@ class InscriptionViewModel: ObservableObject{
               task.resume()
           }
       } else {
-
-
+                
+          var inscriptionData: [String: Any]
       
-      if let zone = zoneSelected{
-        inscriptionData = [
-          "idBenevole": userId,
-          "idZoneBenevole": zone.idZoneBenevole,
-          "idPoste": selectedPosition?.idPoste ?? 0,
-          "Creneau": timeSlot,
-          "Jour": dateString,
-          "isPresent": false
-        ]
-      } else {
-        inscriptionData = [
-          "idBenevole": userId,
-          "idZoneBenevole": selectedPosition?.idPoste ?? 0,
-          "idPoste": selectedPosition?.idPoste ?? 0,
-          "Creneau": timeSlot,
-          "Jour": dateString,
-          "isPresent": false
-        ]
-      }
-      
-      
-      
-      guard let url = URL(string: "\(url)inscription-module") else {
-        print("Invalid URL")
-        return
-      }
-      
-      let jsonData = try? JSONSerialization.data(withJSONObject: inscriptionData)
-      
-      var request = URLRequest(url: url)
-      request.httpMethod = "POST"
-      request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-      request.httpBody = jsonData
-      
-      let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-        if let error = error {
-          completion(.failure(error))
-          return
-        }
-        
-        guard let data = data else {
-          completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
-          return
-        }
-        
-        do {
-          // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
-          DispatchQueue.main.async {
-            completion(.success(true))
+          if let zone = zoneSelected{
+            inscriptionData = [
+              "idBenevole": userId,
+              "idZoneBenevole": zone.idZoneBenevole,
+              "idPoste": selectedPosition?.idPoste ?? 0,
+              "Creneau": timeSlot,
+              "Jour": dateString,
+              "isPresent": false
+            ]
+          } else {
+            inscriptionData = [
+              "idBenevole": userId,
+              "idZoneBenevole": selectedPosition?.idPoste ?? 0,
+              "idPoste": selectedPosition?.idPoste ?? 0,
+              "Creneau": timeSlot,
+              "Jour": dateString,
+              "isPresent": false
+            ]
           }
+          
+          print("DATA : ", inscriptionData)
+          
+          guard let url = URL(string: "\(url)inscription-module") else {
+            print("Invalid URL")
+            return
+          }
+          
+          let jsonData = try? JSONSerialization.data(withJSONObject: inscriptionData)
+          
+          var request = URLRequest(url: url)
+          request.httpMethod = "POST"
+          request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+          request.httpBody = jsonData
+          
+          let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+              completion(.failure(error))
+              return
+            }
+            
+            guard let data = data else {
+              completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+              return
+            }
+            
+            do {
+              // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
+              DispatchQueue.main.async {
+                completion(.success(true))
+              }
+            }
+          }
+          
+          task.resume()
         }
-      }
-      
-      task.resume()
-    }
   }
 
   func fetchZonePoste() {
