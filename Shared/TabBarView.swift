@@ -12,6 +12,7 @@ struct TabBarView: View {
     @State var festivalId: FestivalID
     @State var festival: Festival
     @State private var isInscriptionCreneauViewActive = false
+    @State private var isInscriptionZoneViewActive = false
     @State private var selectedTab = Tab.dashboard
 
     var body: some View {
@@ -36,7 +37,7 @@ struct TabBarView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive)
+            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
                 .tag(Tab.inscription)
                 .tabItem {
                     Image(systemName: "person.crop.circle.badge.plus")

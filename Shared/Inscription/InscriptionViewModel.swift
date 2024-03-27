@@ -13,7 +13,11 @@ class InscriptionViewModel: ObservableObject{
   @Published var state = InscriptionState()
   
   @Published var selectedPosition: Position?
+  @Published var flexiblePosition: [Position]?
+  @Published var zoneSelected: Zone?
+  @Published var zones: [Zone]?
   @Published var inscriptionUser: [Inscription]?
+  @Published var games: [Game]?
   
   let url: String = "https://awi-api-2.onrender.com/"
   let userId = UserDefaults.standard.integer(forKey: "id")
@@ -43,6 +47,9 @@ class InscriptionViewModel: ObservableObject{
       
       case .navigateToInscriptionCreneauView:
         fetchUserInscription()
+      
+      case .navigateToInscriptionZoneView:
+        fetchZonePoste()
     }
     
     
@@ -119,6 +126,7 @@ class InscriptionViewModel: ObservableObject{
           print("Invalid URL")
           return
       }
+      print(url)
       let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
           if let error = error {
               print("Error: \(error)")
@@ -161,15 +169,29 @@ class InscriptionViewModel: ObservableObject{
       formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
       let dateString = formatter.string(from: date)
     
-
-      let inscriptionData: [String: Any] = [
-          "idBenevole": userId,
-          "idZoneBenevole": selectedPosition?.idPoste ?? 0,
-          "idPoste": selectedPosition?.idPoste ?? 0,
-          "Creneau": timeSlot,
-          "Jour": dateString,
-          "isPresent": false
-      ]
+      let inscriptionData: [String: Any]
+    
+      if let zone = zoneSelected{
+        inscriptionData = [
+            "idBenevole": userId,
+            "idZoneBenevole": zone.idZoneBenevole,
+            "idPoste": selectedPosition?.idPoste ?? 0,
+            "Creneau": timeSlot,
+            "Jour": dateString,
+            "isPresent": false
+        ]
+      } else {
+        inscriptionData = [
+            "idBenevole": userId,
+            "idZoneBenevole": selectedPosition?.idPoste ?? 0,
+            "idPoste": selectedPosition?.idPoste ?? 0,
+            "Creneau": timeSlot,
+            "Jour": dateString,
+            "isPresent": false
+        ]
+      }
+    
+      
 
       guard let url = URL(string: "\(url)inscription-module") else {
           print("Invalid URL")
@@ -195,19 +217,90 @@ class InscriptionViewModel: ObservableObject{
             }
 
             do {
-                // ... (le reste du code de traitement de la réponse)
-
                 // Mettez à jour l'état ou effectuez d'autres actions en fonction de la réponse
                 DispatchQueue.main.async {
                     completion(.success(true))
                 }
-            } catch {
-                completion(.failure(error))
             }
         }
 
         task.resume()
   }
+
+  func fetchZonePoste() {
+      guard let selectedPosition = selectedPosition else {
+          print("Selected position is nil")
+          return
+      }
+
+      let urlString = "\(url)volunteer-area-module/\(idFestival.id)/\(selectedPosition.idPoste)"
+    
+      print(urlString)
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedZones = try decoder.decode([Zone].self, from: data)
+              print("DecodedZone : ", decodedZones)
+              DispatchQueue.main.async {
+                  self.zones = decodedZones
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+  
+  func fetchGamesForZone(idZone: Int) {
+      let urlString = "\(url)game-module/zoneBenevole/\(idZone)"
+
+      guard let url = URL(string: urlString) else {
+          print("Invalid URL")
+          return
+      }
+
+      let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+          if let error = error {
+              print("Error: \(error)")
+              return
+          }
+
+          guard let data = data else {
+              print("Error: No data received")
+              return
+          }
+
+          do {
+              let decoder = JSONDecoder()
+              let decodedGames = try decoder.decode([Game].self, from: data)
+              DispatchQueue.main.async {
+                  self.games = decodedGames
+              }
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+      }
+
+      task.resume()
+  }
+
 
 
   

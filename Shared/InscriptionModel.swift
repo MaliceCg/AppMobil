@@ -9,7 +9,7 @@ import Foundation
 
 struct Inscription: Codable, Hashable {
       let idBenevole: Int
-      let idZoneBenevole: Int
+      let idZoneBenevole: Int?
       let idPoste: Int
       let Creneau: String
       let Jour: String

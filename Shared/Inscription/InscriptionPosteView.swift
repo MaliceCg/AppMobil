@@ -14,6 +14,9 @@ struct InscriptionPosteView: View {
     @State private var currentPage = "inscription"
     @State private var isLoading = true // Ajoute une propriété pour suivre l'état du chargement
     @Binding var isInscriptionCreneauViewActive: Bool
+    @Binding var isInscriptionZoneViewActive: Bool
+  
+
 
     var body: some View {
         VStack {
@@ -32,6 +35,9 @@ struct InscriptionPosteView: View {
                             ForEach(positions) { position in
                                 Button(action: {
                                   if(position.nomPoste == "Animation Jeux"){
+                                    isInscriptionZoneViewActive = true
+                                    self.viewModel.selectedPosition = position
+                                    self.viewModel.send(intent: .navigateToInscriptionZoneView)
                                   } else {
                                     isInscriptionCreneauViewActive = true
                                     self.viewModel.selectedPosition = position
@@ -57,7 +63,7 @@ struct InscriptionPosteView: View {
                     .foregroundColor(.gray)
                     .underline()
                     .onTapGesture {
-                        // Action à effectuer lorsque le texte est pressé
+
                     }
                     .padding()
             }
@@ -71,7 +77,10 @@ struct InscriptionPosteView: View {
                 self.isLoading = false // Met à jour l'état du chargement
             }
         }
+
     }
+  
+
 }
 
 
