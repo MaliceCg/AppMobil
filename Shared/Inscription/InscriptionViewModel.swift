@@ -19,6 +19,7 @@ class InscriptionViewModel: ObservableObject{
   @Published var flexiblePosition: [Position]?
   @Published var zoneSelected: Zone?
   @Published var zones: [Zone]?
+  @Published var inscriptions: [Inscription]?
   @Published var inscriptionUser: [Inscription]?
   @Published var games: [Game]?
   
@@ -59,6 +60,26 @@ class InscriptionViewModel: ObservableObject{
     
     
   }
+  
+  func getInscriptionCount(timeSlot: String, date: Date, postId: Int) -> Int? {
+      guard let inscriptions = self.inscriptions else {
+          // Les inscriptions ne sont pas disponibles, renvoyer nil
+          return 0
+      }
+
+      let formatter = ISO8601DateFormatter()
+      formatter.formatOptions = [.withFullDate, .withTimeZone]
+    
+      let filteredInscriptions = inscriptions.filter { inscription in
+          return inscription.idPoste == postId &&
+            inscription.Creneau == timeSlot
+      }
+    
+      print("COUNT : ", filteredInscriptions.count)
+      return filteredInscriptions.count
+  }
+
+
   
   func fetchPositionsData() {
       let url = "\(url)position-module"
@@ -144,9 +165,14 @@ class InscriptionViewModel: ObservableObject{
 
           do {
               let decoder = JSONDecoder()
-              let inscriptionsUser = try decoder.decode([Inscription].self, from: data)
+              let inscriptions = try decoder.decode([Inscription].self, from: data)
               DispatchQueue.main.async {
-                  self.inscriptionUser = inscriptionsUser
+                  self.inscriptions = inscriptions
+                
+                  let userInscriptions = inscriptions.filter { $0.idBenevole == self.userId }
+
+                  // Affecter les inscriptions de l'utilisateur actuel à self.inscriptionUser
+                  self.inscriptionUser = userInscriptions
               }
           } catch {
               print("Error decoding response: \(error)")

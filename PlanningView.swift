@@ -13,7 +13,29 @@ struct PlanningView: View {
     @ObservedObject var viewModel: PlanningViewModel
 
     @State private var currentPage = "planning"
+    
 
+    var body: some View {
+        VStack {
+            HeaderView(selectedFestivalId: $festivalId, currentPage: $currentPage)
+
+            PlanningComponent(viewModel: viewModel)
+
+            Spacer()
+        }
+        .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
+        .edgesIgnoringSafeArea(.top)
+        .onAppear {
+                    viewModel.send(intent: .fetchFestivalData)
+                  }
+    }
+
+}
+
+struct PlanningComponent: View{
+  
+  @ObservedObject var viewModel: PlanningViewModel
+  
     private func buildDaysView(for festival: Festival) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
@@ -24,7 +46,11 @@ struct PlanningView: View {
             }
         }
     }
-
+    
+    var gradient: LinearGradient {
+            LinearGradient(gradient: Gradient(colors: [.white, Color(.sRGB, white: 0.95, opacity: 1)]), startPoint: .top, endPoint: .bottom)
+        }
+  
   private func buildDayView(for festival: Festival, index: Int) -> some View {
       let date = Calendar.current.date(byAdding: .day, value: index, to: festival.dateDebut)!
       let formatter = DateFormatter()
@@ -107,48 +133,31 @@ struct PlanningView: View {
              return screenWidth / 3
          }
      }
-    
-    var gradient: LinearGradient {
-            LinearGradient(gradient: Gradient(colors: [.white, Color(.sRGB, white: 0.95, opacity: 1)]), startPoint: .top, endPoint: .bottom)
-        }
-    
-
-    var body: some View {
+  
+  var body: some View {
+    if let festival = viewModel.state.festival {
+        Text(festival.nomFestival)
+            .font(.largeTitle)
         VStack {
-            HeaderView(selectedFestivalId: $festivalId, currentPage: $currentPage)
-
-            if let festival = viewModel.state.festival {
-                Text(festival.nomFestival)
-                    .font(.largeTitle)
-                VStack {
-                HStack(spacing: 0) {
-                    buildDaysView(for: festival)
-                }
-                HStack {
-                    buildLegendView()
-                }
-                }
-                .frame(maxWidth: 400, maxHeight: 450)
-                
-                .background(
-                    gradient
-                        .cornerRadius(16)
-                )
-                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
-               
-            } else {
-                ProgressView()
-            }
-
-            Spacer()
+        HStack(spacing: 0) {
+            buildDaysView(for: festival)
         }
-        .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
-        .edgesIgnoringSafeArea(.top)
-        .onAppear {
-                    viewModel.send(intent: .fetchFestivalData)
-                  }
+        HStack {
+            buildLegendView()
+        }
+        }
+        .frame(maxWidth: 400, maxHeight: 450)
+        
+        .background(
+            gradient
+                .cornerRadius(16)
+        )
+        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 4)
+       
+    } else {
+        ProgressView()
     }
-
+  }
 }
 
 

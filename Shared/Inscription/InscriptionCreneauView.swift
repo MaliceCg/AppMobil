@@ -68,37 +68,83 @@ struct InscriptionCreneauView: View {
     }
 
 
-
-
-      private func buildTimeSlotView(timeSlot: String, date: Date) -> some View {
+      private func buildTimeSlotView(timeSlot: String, date: Date) -> AnyView {
           let isAlreadyRegistered = viewModel.isUserAlreadyRegistered(timeSlot: timeSlot, date: date)
 
-          return Text(timeSlot)
-              .font(isAlreadyRegistered ? .subheadline.italic() : .subheadline)
-              .foregroundColor(isAlreadyRegistered ? .gray : .primary)
-              .frame(maxWidth: .infinity, alignment: .center)
-              .overlay(
-                  RoundedRectangle(cornerRadius: 10)
-                      .stroke(Color.gray, lineWidth: 0)
-                      .frame(height: 40)
-              )
-              .padding(.bottom, 36)
-              .contentShape(Rectangle()) // Ajoute une forme de contenu pour rendre le texte cliquable
-              .onTapGesture {
-                  if !isAlreadyRegistered {
-                      viewModel.postInscription(timeSlot: timeSlot, date: date) { result in
-                        switch result {
-                            case .success:
-                                  alertMessage = "Inscription réussie !"
-                                  showAlert = true
-                            case .failure(let error):
-                                  alertMessage = "Erreur lors de l'inscription : \(error.localizedDescription)"
-                                  showAlert = true
-                            }
+          // Vérifier si selectedPosition a une valeur
+          if let selectedPosition = viewModel.selectedPosition {
+              // Obtenir le nombre d'inscriptions pour cette heure, ce jour et ce poste
+              let inscriptionCount = viewModel.getInscriptionCount(timeSlot: timeSlot, date: date, postId: selectedPosition.idPoste)
+
+              let timeSlotView = VStack(alignment: .leading, spacing: 4) {
+                  Text(timeSlot)
+                      .font(isAlreadyRegistered ? .subheadline.italic() : .subheadline)
+                      .foregroundColor(isAlreadyRegistered ? .gray : .primary)
+                      .frame(maxWidth: .infinity, alignment: .center)
+                      .overlay(
+                          RoundedRectangle(cornerRadius: 10)
+                              .stroke(Color.gray, lineWidth: 0)
+                              .frame(height: 40)
+                      )
+                      .padding(.bottom, 6)
+                      .contentShape(Rectangle()) // Ajoute une forme de contenu pour rendre le texte cliquable
+                      .onTapGesture {
+                          if !isAlreadyRegistered {
+                              viewModel.postInscription(timeSlot: timeSlot, date: date) { result in
+                                  switch result {
+                                  case .success:
+                                      alertMessage = "Inscription réussie !"
+                                      showAlert = true
+                                  case .failure(let error):
+                                      alertMessage = "Erreur lors de l'inscription : \(error.localizedDescription)"
+                                      showAlert = true
+                                  }
+                              }
+                          }
                       }
+
+                  // Ajouter une jauge ici
+                  if let count = inscriptionCount, let capacity = selectedPosition.capacite {
+                      ProgressView(value: Double(count) / Double(capacity))
+                          .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                          .frame(width: 70, height: 10)
+                          .padding(.bottom, 30)
                   }
               }
+
+              return AnyView(timeSlotView)
+          } else {
+              // Afficher uniquement le Text si selectedPosition est nil
+              let timeSlotView = Text(timeSlot)
+                  .font(isAlreadyRegistered ? .subheadline.italic() : .subheadline)
+                  .foregroundColor(isAlreadyRegistered ? .gray : .primary)
+                  .frame(maxWidth: .infinity, alignment: .center)
+                  .overlay(
+                      RoundedRectangle(cornerRadius: 10)
+                          .stroke(Color.gray, lineWidth: 0)
+                          .frame(height: 40)
+                  )
+                  .padding(.bottom, 36)
+                  .contentShape(Rectangle()) // Ajoute une forme de contenu pour rendre le texte cliquable
+                  .onTapGesture {
+                      if !isAlreadyRegistered {
+                          viewModel.postInscription(timeSlot: timeSlot, date: date) { result in
+                              switch result {
+                              case .success:
+                                  alertMessage = "Inscription réussie !"
+                                  showAlert = true
+                              case .failure(let error):
+                                  alertMessage = "Erreur lors de l'inscription : \(error.localizedDescription)"
+                                  showAlert = true
+                              }
+                          }
+                      }
+                  }
+
+              return AnyView(timeSlotView)
+          }
       }
+
 
 
 
