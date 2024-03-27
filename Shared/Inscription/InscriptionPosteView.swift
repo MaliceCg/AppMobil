@@ -15,6 +15,7 @@ struct InscriptionPosteView: View {
     @State private var isLoading = true // Ajoute une propriété pour suivre l'état du chargement
     @Binding var isInscriptionCreneauViewActive: Bool
     @Binding var isInscriptionZoneViewActive: Bool
+    @State private var isFlexibleSheetPresented = false
   
 
 
@@ -63,13 +64,16 @@ struct InscriptionPosteView: View {
                     .foregroundColor(.gray)
                     .underline()
                     .onTapGesture {
-
+                      self.isFlexibleSheetPresented = true
                     }
                     .padding()
             }
 
             Spacer()
         }
+          .sheet(isPresented: $isFlexibleSheetPresented) { // Ajoute la méthode .sheet
+            FlexiblePosteView(viewModel: viewModel, isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive) // Remplacez par votre vue personnalisée
+          }
         .edgesIgnoringSafeArea(.top)
         .onAppear {
             viewModel.send(intent: .fetchPositionFestival)
@@ -77,11 +81,54 @@ struct InscriptionPosteView: View {
                 self.isLoading = false // Met à jour l'état du chargement
             }
         }
-
     }
-  
-
 }
+
+struct FlexiblePosteView: View {
+    @ObservedObject var viewModel: InscriptionViewModel
+    @State private var selectedPostes: Set<Position> = [] // Ensemble des postes sélectionnés
+    @Binding var isInscriptionCreneauViewActive: Bool
+
+    var body: some View {
+        VStack {
+            Form {
+                ForEach(viewModel.state.filteredPositions.filter { $0.nomPoste != "Animation Jeux" }, id: \.self) { position in
+                    HStack {
+                        Text(position.nomPoste)
+                        Spacer()
+                        Toggle("", isOn: Binding<Bool>(
+                            get: { self.selectedPostes.contains(position) },
+                            set: { isOn in
+                                if isOn {
+                                    self.selectedPostes.insert(position)
+                                } else {
+                                    self.selectedPostes.remove(position)
+                                }
+                            }
+                        ))
+                    }
+                }
+            }
+            .padding()
+
+            Button(action: {
+              isInscriptionCreneauViewActive = true
+              self.viewModel.flexiblePosition = Array(self.selectedPostes)
+              self.viewModel.send(intent: .navigateToInscriptionCreneauView)
+            }) {
+                Text("Valider")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
+            .padding()
+        }
+    }
+}
+
 
 
 
