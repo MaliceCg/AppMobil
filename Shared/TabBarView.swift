@@ -50,6 +50,8 @@ struct TabBarView: View {
                     Image(systemName: "gamecontroller")
                     Text("Activités")
                 }
+            
+           
         }
     }
   

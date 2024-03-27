@@ -9,6 +9,7 @@ import SwiftUI
 import Foundation
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
+    @State private var currentPage = "profile"
     @State private var showEditForm = false
     @State private var editedPseudo = ""
     @State private var editedPrenom = ""
