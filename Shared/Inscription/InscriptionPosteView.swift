@@ -91,6 +91,13 @@ struct FlexiblePosteView: View {
 
     var body: some View {
         VStack {
+            
+            // Ajoutez cette vue Text ici
+            Text("Choisissez les postes sur lesquels vous souhaitez être flexibe : ")
+                .font(.headline)
+                .foregroundColor(.black)
+                .padding()
+          
             Form {
                 ForEach(viewModel.filteredPositions.filter { $0.nomPoste != "Animation Jeux" }, id: \.self) { position in
                     HStack {
@@ -124,6 +131,8 @@ struct FlexiblePosteView: View {
                     .background(Color.blue)
                     .cornerRadius(10)
             }
+            .disabled(selectedPostes.isEmpty)
+            .opacity(selectedPostes.isEmpty ? 0.5 : 1.0)
             .padding()
         }
     }
