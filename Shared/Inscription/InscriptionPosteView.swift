@@ -30,7 +30,7 @@ struct InscriptionPosteView: View {
             if isLoading { // Affiche le texte "Chargement..." lorsque les données sont en cours de chargement
                 Text("Chargement...")
             } else { // Affiche les boutons lorsque les données sont chargées
-                if let positions = viewModel.state.filteredPositions {
+                if let positions = viewModel.filteredPositions {
                     ScrollView {
                         LazyVStack {
                             ForEach(positions) { position in
@@ -92,7 +92,7 @@ struct FlexiblePosteView: View {
     var body: some View {
         VStack {
             Form {
-                ForEach(viewModel.state.filteredPositions.filter { $0.nomPoste != "Animation Jeux" }, id: \.self) { position in
+                ForEach(viewModel.filteredPositions.filter { $0.nomPoste != "Animation Jeux" }, id: \.self) { position in
                     HStack {
                         Text(position.nomPoste)
                         Spacer()
@@ -128,7 +128,3 @@ struct FlexiblePosteView: View {
         }
     }
 }
-
-
-
-

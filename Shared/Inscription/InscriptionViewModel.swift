@@ -12,6 +12,9 @@ class InscriptionViewModel: ObservableObject{
     
   @Published var state = InscriptionState()
   
+  @Published var positions: [Position] = []
+  @Published var employers: [Employer] = []
+  @Published var filteredPositions: [Position] = []
   @Published var selectedPosition: Position?
   @Published var flexiblePosition: [Position]?
   @Published var zoneSelected: Zone?
@@ -78,7 +81,7 @@ class InscriptionViewModel: ObservableObject{
               let decoder = JSONDecoder()
               let decodedPositions = try decoder.decode([Position].self, from: data)
               DispatchQueue.main.async {
-                  self.state.positions = decodedPositions
+                  self.positions = decodedPositions
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -109,7 +112,7 @@ class InscriptionViewModel: ObservableObject{
               let decoder = JSONDecoder()
               let employers = try decoder.decode([Employer].self, from: data)
               DispatchQueue.main.async {
-                  self.state.employers = employers
+                  self.employers = employers
                   self.getPositionsForFestival()
               }
           } catch {
@@ -126,7 +129,6 @@ class InscriptionViewModel: ObservableObject{
           print("Invalid URL")
           return
       }
-      print(url)
       let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
           if let error = error {
               print("Error: \(error)")
@@ -141,7 +143,6 @@ class InscriptionViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let inscriptionsUser = try decoder.decode([Inscription].self, from: data)
-              print("InscriptionUser : ", inscriptionsUser)
               DispatchQueue.main.async {
                   self.inscriptionUser = inscriptionsUser
               }
@@ -154,14 +155,13 @@ class InscriptionViewModel: ObservableObject{
   }
 
   func getPositionsForFestival() {
-        // Filtre les positions employées par ce festival
-    
       self.objectWillChange.send()
-      self.state.filteredPositions = self.state.positions.filter { position in
-            self.state.employers.contains { employer in
+      self.filteredPositions = self.positions.filter { position in
+            self.employers.contains { employer in
                 employer.idPoste == position.idPoste
             }
         }
+      print("Filtered Positions : ", filteredPositions)
     }
   
   func postInscription(timeSlot: String, date: Date, completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -284,7 +284,6 @@ class InscriptionViewModel: ObservableObject{
 
       let urlString = "\(url)volunteer-area-module/\(idFestival.id)/\(selectedPosition.idPoste)"
     
-      print(urlString)
 
       guard let url = URL(string: urlString) else {
           print("Invalid URL")
@@ -305,7 +304,6 @@ class InscriptionViewModel: ObservableObject{
           do {
               let decoder = JSONDecoder()
               let decodedZones = try decoder.decode([Zone].self, from: data)
-              print("DecodedZone : ", decodedZones)
               DispatchQueue.main.async {
                   self.zones = decodedZones
               }
@@ -381,9 +379,4 @@ class InscriptionViewModel: ObservableObject{
 
       return !filteredInscriptions.isEmpty
   }
-
-  
-
-  
-  
 }

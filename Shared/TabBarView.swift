@@ -50,11 +50,6 @@ struct TabBarView: View {
                     Text("Activités")
                 }
         }
-//        .onChange(of: selectedTab) { newTab in
-//            if newTab == Tab.inscription {
-//                isInscriptionCreneauViewActive = false
-//              }
-//        }
     }
   
 }
