@@ -47,6 +47,8 @@ class PlanningViewModel: ObservableObject{
       var request = URLRequest(url: URL(string: festivalURL)!)
       request.httpMethod = "GET" // Définir la méthode HTTP à utiliser
       request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+      print("URL : ", festivalURL)
 
       let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
           if let error = error {
@@ -90,6 +92,8 @@ class PlanningViewModel: ObservableObject{
           print("Invalid URL")
           return
       }
+    
+      print("URL : ", url)
 
       let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
           if let error = error {
@@ -151,7 +155,6 @@ class PlanningViewModel: ObservableObject{
   }
   
   func fetchUserInscriptions() {
-      print("Début requête ! ")
       let group = DispatchGroup()
       for employer in state.employers {
           group.enter()
@@ -168,6 +171,8 @@ class PlanningViewModel: ObservableObject{
               group.leave()
               continue
           }
+        
+          print("URL : ", url)
 
           let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
               defer {

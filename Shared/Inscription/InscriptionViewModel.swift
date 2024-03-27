@@ -12,31 +12,31 @@ class InscriptionViewModel: ObservableObject{
     
   @Published var state = InscriptionState()
   
+  @Published var idFestival: FestivalID
+  @Published var festival : Festival
+  
   @Published var positions: [Position] = []
   @Published var employers: [Employer] = []
   @Published var filteredPositions: [Position] = []
-  @Published var selectedPosition: Position?
-  @Published var flexiblePosition: [Position]?
-  @Published var zoneSelected: Zone?
-  @Published var zones: [Zone]?
-  @Published var inscriptions: [Inscription]?
-  @Published var inscriptionUser: [Inscription]?
-  @Published var games: [Game]?
+  @Published var selectedPosition: Position? = nil
+  @Published var flexiblePosition: [Position]? = []
+  @Published var zoneSelected: Zone? = nil
+  @Published var zones: [Zone]? = []
+  @Published var inscriptions: [Inscription]? = []
+  @Published var inscriptionUser: [Inscription]? = []
+  @Published var games: [Game]? = []
   
   @Published var zoneInscriptionCount: [Int: Int] = [:]
   
   let url: String = "https://awi-api-2.onrender.com/"
   let userId = UserDefaults.standard.integer(forKey: "id")
-
-  
-  @Published var idFestival: FestivalID
-  @Published var festival : Festival
   
   var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
   
   
   init(idFestival: FestivalID, festival: Festival) {
       self.idFestival = idFestival
+      print("ID FESTIVAL ", idFestival)
       self.festival = festival
   }
   
@@ -73,9 +73,7 @@ class InscriptionViewModel: ObservableObject{
       let filteredInscriptions = inscriptions.filter { inscription in
           return inscription.idPoste == postId &&
             inscription.Creneau == timeSlot
-      }
-    
-      print("COUNT : ", filteredInscriptions.count)
+      }    
       return filteredInscriptions.count
   }
 
@@ -189,7 +187,6 @@ class InscriptionViewModel: ObservableObject{
                 employer.idPoste == position.idPoste
             }
         }
-      print("Filtered Positions : ", filteredPositions)
     }
   
   func postInscription(timeSlot: String, date: Date, completion: @escaping (Result<Bool, Error>) -> Void) {
