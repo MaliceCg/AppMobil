@@ -63,22 +63,34 @@ class InscriptionViewModel: ObservableObject{
   
   func getInscriptionCount(timeSlot: String, date: Date, postId: Int) -> Int? {
       guard let inscriptions = self.inscriptions else {
-          // Les inscriptions ne sont pas disponibles, renvoyer nil
           return 0
       }
 
-      let formatter = ISO8601DateFormatter()
-      formatter.formatOptions = [.withFullDate, .withTimeZone]
-    
+      let formatter = DateFormatter()
+      formatter.dateFormat = "yyyy-MM-dd"
+
+      // Convertir la date spécifiée en une chaîne de caractères avec le format spécifié
+      let dateString = formatter.string(from: date)
+
+      // Filtrer les inscriptions en fonction du créneau, du poste et de la date spécifiée
       let filteredInscriptions = inscriptions.filter { inscription in
+          // Formatter la date de l'inscription en une chaîne de caractères avec le format spécifié
+          guard let inscriptionDate = formatter.date(from: String(inscription.Jour.prefix(10))) else {
+              return false
+          }
+          let inscriptionDateString = formatter.string(from: inscriptionDate)
+        
           return inscription.idPoste == postId &&
-            inscription.Creneau == timeSlot
-      }    
+              inscription.Creneau == timeSlot &&
+              inscriptionDateString == dateString
+      }
+
       return filteredInscriptions.count
   }
 
 
-  
+
+
   func fetchPositionsData() {
       let url = "\(url)position-module"
     

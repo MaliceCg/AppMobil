@@ -14,7 +14,6 @@ struct TabBarView: View {
     @State private var isInscriptionCreneauViewActive = false
     @State private var isInscriptionZoneViewActive = false
     @State private var selectedTab = Tab.dashboard
-    @StateObject var planningViewModel: PlanningViewModel
   
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -25,14 +24,14 @@ struct TabBarView: View {
                     Text("Notifications")
                 }
 
-            PlanningView(festivalId: $festivalId, viewModel: planningViewModel)
+            PlanningView(festivalId: $festivalId, viewModel: PlanningViewModel(idFestival: festivalId))
                 .tag(Tab.planning)
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Planning")
                 }
 
-          DashboardView(selectedFestivalId: $festivalId, viewModel: planningViewModel)
+          DashboardView(selectedFestivalId: $festivalId)
                 .tag(Tab.dashboard)
                 .tabItem {
                     Image(systemName: "house")

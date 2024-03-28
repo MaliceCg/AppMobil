@@ -27,9 +27,6 @@ class PlanningViewModel: ObservableObject{
   init(idFestival: FestivalID) {
       self.idFestival = idFestival
   }
-
-  
-
   
   func send(intent: PlanningIntent) {
       self.planningIntent = intent
