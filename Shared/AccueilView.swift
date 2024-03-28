@@ -43,7 +43,7 @@ struct AccueilView: View {
                     }
                     .listStyle(PlainListStyle())
                     if let selectedFestivalId = selectedFestivalId, let selectedFestival = selectedFestival {
-                        NavigationLink(destination: TabBarView(festivalId: selectedFestivalId, festival: selectedFestival, planningViewModel: PlanningViewModel(idFestival: selectedFestivalId)), isActive: Binding<Bool>(
+                        NavigationLink(destination: TabBarView(festivalId: selectedFestivalId, festival: selectedFestival), isActive: Binding<Bool>(
                                                                 get: { selectedFestivalId != nil },
                                                                 set: { _ in }
                                                             )) {

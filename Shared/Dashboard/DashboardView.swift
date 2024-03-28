@@ -11,6 +11,7 @@ struct DashboardView: View {
     @State private var currentPage = "dashboard"
     @State private var isProfileViewActive = false
 
+
     var body: some View {
         VStack {
             HeaderView(selectedFestivalId: $selectedFestivalId, currentPage: $currentPage)
