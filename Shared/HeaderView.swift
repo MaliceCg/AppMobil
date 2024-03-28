@@ -10,6 +10,7 @@ struct HeaderView: View {
     @Binding var selectedFestivalId: FestivalID
     @Binding var currentPage: String
     @State private var festivals: [Festival] = []
+    @State private var showProfileView = false
 
     var gradient: LinearGradient {
         LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.05882352941, green: 0.3529411765, blue: 0.6196078431, alpha: 1)), Color(#colorLiteral(red: 0.2274509804, green: 0.7843137255, blue: 0.9411764706, alpha: 1))]), startPoint: .top, endPoint: .bottom)
@@ -31,6 +32,7 @@ struct HeaderView: View {
                     }
                     .padding(.horizontal)
                     .padding(.bottom, 4)
+                    
                     Spacer()
                 }
             }
@@ -65,7 +67,7 @@ struct HeaderView: View {
 
             switch currentPage {
             case "dashboard":
-                return "Tableau de bord"
+                return "Application"
             case "profile":
                 return "Profil utilisateur"
             case "inscription":

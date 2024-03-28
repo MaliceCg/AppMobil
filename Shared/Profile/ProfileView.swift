@@ -9,6 +9,7 @@ import SwiftUI
 import Foundation
 struct ProfileView: View {
     @ObservedObject var viewModel: ProfileViewModel
+    @State private var currentPage = "profile"
     @State private var showEditForm = false
     @State private var editedPseudo = ""
     @State private var editedPrenom = ""
@@ -21,6 +22,10 @@ struct ProfileView: View {
     @State private var editedTailletTShirt = ""
     @State private var editedStatutHebergement = ""
     @State private var showSaveButton = false
+    let regimeOptions = ["Peu importe", "Végétarien", "Omnivore", "Halal"]
+    let tshirtSizeOptions = ["Non renseigné","XS", "S", "M", "L", "XL"]
+    let housingStatusOptions = ["Pas besoin de logement","En Recherche de logement", "Proposition de logement"]
+
 
     var body: some View {
         VStack {
@@ -92,36 +97,55 @@ struct ProfileView: View {
                         HStack {
                             Text("Régime Alimentaire:")
                             Spacer()
-                            TextField(editedRegime, text: $editedRegime)
-                                .onChange(of: editedRegime) { _ in
-                                    showSaveButton = true
+                            Picker(selection: $editedRegime, label: Text("Régime Alimentaire")) {
+                                ForEach(regimeOptions, id: \.self) { option in
+                                    Text(option)
                                 }
+                            }
+                            .pickerStyle(.menu) // Ajoutez cette ligne
+                            .onChange(of: editedRegime) { _ in
+                                showSaveButton = true
+                            }
                         }
+
                         HStack {
                             Text("Taille T-Shirt:")
                             Spacer()
-                            TextField(editedTailletTShirt, text: $editedTailletTShirt)
-                                .onChange(of: editedTailletTShirt) { _ in
-                                    showSaveButton = true
+                            Picker(selection: $editedTailletTShirt, label: Text("Taille T-Shirt")) {
+                                ForEach(tshirtSizeOptions, id: \.self) { option in
+                                    Text(option)
                                 }
+                            }
+                            .pickerStyle(.menu) // Ajoutez cette ligne
+                            .onChange(of: editedTailletTShirt) { _ in
+                                showSaveButton = true
+                            }
                         }
+
                         HStack {
                             Text("Logement:")
                             Spacer()
-                            TextField(editedStatutHebergement, text: $editedStatutHebergement)
-                                .onChange(of: editedStatutHebergement) { _ in
-                                    showSaveButton = true
+                            Picker(selection: $editedStatutHebergement, label: Text("Logement")) {
+                                ForEach(housingStatusOptions, id: \.self) { option in
+                                    Text(option)
                                 }
+                            }
+                            .pickerStyle(.menu) // Ajoutez cette ligne
+                            .onChange(of: editedStatutHebergement) { _ in
+                                showSaveButton = true
+                            }
                         }
+                        
                     }
+                    HStack{
+                        Button(action: {
+                            viewModel.sendIntent(intent: .logout)
+                        }) {
+                            Text("Déconnexion")
+                            }
+                        }
                 }
                 .listStyle(GroupedListStyle())
-                .navigationBarTitle("Profil")
-                .navigationBarItems(trailing: Button(action: {
-                    viewModel.sendIntent(intent: .logout)
-                }) {
-                    Text("Déconnexion")
-                })
                 .onAppear {
                     if !viewModel.didFetchUserData {
                         viewModel.sendIntent(intent: .fetchUserData)

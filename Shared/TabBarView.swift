@@ -31,7 +31,7 @@ struct TabBarView: View {
                     Text("Planning")
                 }
 
-          DashboardView(selectedFestivalId: $festivalId)
+            DashboardView(selectedFestivalId: $festivalId)
                 .tag(Tab.dashboard)
                 .tabItem {
                     Image(systemName: "house")
@@ -49,6 +49,8 @@ struct TabBarView: View {
                     Image(systemName: "gamecontroller")
                     Text("Activités")
                 }
+            
+           
         }
     }
   
