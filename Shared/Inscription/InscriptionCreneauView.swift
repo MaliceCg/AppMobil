@@ -153,10 +153,10 @@ struct InscriptionCreneauView: View {
           VStack {
             HeaderView(selectedFestivalId: $festivalId,currentPage: $currentPage )
             
-            if let festival = viewModel.festival {
+              if let festival = viewModel.state.festival! {
                   buildDaysView(for: festival)
               } else {
-                  Text("Chargement...")
+                  ProgressView()
               }
             Spacer()
             }

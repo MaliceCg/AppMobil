@@ -26,6 +26,8 @@ class PlanningViewModel: ObservableObject{
   
   init(idFestival: FestivalID) {
       self.idFestival = idFestival
+      send(intent: .fetchFestivalData)
+      
   }
   
   func send(intent: PlanningIntent) {
@@ -70,6 +72,7 @@ class PlanningViewModel: ObservableObject{
               
                 self.fetchPositionsData()
                 self.fetchEmployerData()
+                self.state.loading = false
             }
 
 
@@ -210,31 +213,39 @@ class PlanningViewModel: ObservableObject{
               let date = dateFormatter.date(from: inscription.Jour)!
               let timeSlotIndex = self.state.timeSlots.firstIndex(of: inscription.Creneau)!
               let dayIndex = Calendar.current.dateComponents([.day], from: self.state.festival!.dateDebut, to: date).day!
+              print(dayIndex)
 
-            
-            if inscription.idZoneBenevole == nil {
-                // Utilisateur flexible, affecter la couleur correspondante
-                self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.9921568627450981, green: 0.30980392156862746, blue: 0.30980392156862746)
-            } else {
-                // Trouver le nom du poste correspondant à l'ID du poste dans l'inscription
-                let postName = self.state.positions.first(where: { $0.idPoste == inscription.idPoste })?.nomPoste ?? ""
+              // Vérifier si les indices sont dans les limites du tableau
+              if dayIndex >= 0 && dayIndex < self.inscriptionColors.count && timeSlotIndex >= 0 && timeSlotIndex < self.inscriptionColors[dayIndex].count {
+                  if inscription.idZoneBenevole == nil {
+                      // Utilisateur flexible, affecter la couleur correspondante
+                      self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.9921568627450981, green: 0.30980392156862746, blue: 0.30980392156862746)
+                  } else {
+                      // Trouver le nom du poste correspondant à l'ID du poste dans l'inscription
+                      let postName = self.state.positions.first(where: { $0.idPoste == inscription.idPoste })?.nomPoste ?? ""
 
-                // Définir la couleur correspondante au poste dans la matrice inscriptionColors
-                switch postName.lowercased() {
-                    case "accueil":
-                        self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.23529411764705882, green: 0.796078431372549, blue: 0.9568627450980393)
-                    case "buvette":
-                        self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06666666666666667, green: 0.4980392156862745, blue: 0.27058823529411763)
-                    case "animation jeux":
-                        self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06274509803921569, green: 0.3607843137254902, blue: 0.6235294117647059)
-                    case "cuisine":
-                        self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.2, green: 0.7686274509803922, blue: 0.5058823529411764)
-                    default:
-                        self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.9568627450980393, green: 0.7176470588235294, blue: 0.25098039215686274)
+                      // Définir la couleur correspondante au poste dans la matrice inscriptionColors
+                      switch postName.lowercased() {
+                          case "accueil":
+                              self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.23529411764705882, green: 0.796078431372549, blue: 0.9568627450980393)
+                          case "buvette":
+                              self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06666666666666667, green: 0.4980392156862745, blue: 0.27058823529411763)
+                          case "animation jeux":
+                              self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.06274509803921569, green: 0.3607843137254902, blue: 0.6235294117647059)
+                          case "cuisine":
+                              self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.2, green: 0.7686274509803922, blue: 0.5058823529411764)
+                          default:
+                              self.inscriptionColors[dayIndex][timeSlotIndex] = Color(red: 0.9568627450980393, green: 0.7176470588235294, blue: 0.25098039215686274)
+                      }
+                  }
+                  
+              } else {
+                  print("Index out of range: dayIndex = \(dayIndex), timeSlotIndex = \(timeSlotIndex)")
               }
-            }
+             
           }
       }
+
 
   }
 

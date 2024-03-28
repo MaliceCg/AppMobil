@@ -15,50 +15,47 @@ struct AccueilView: View {
 
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if festivals.isEmpty {
-                    Text("Il n’y a pas de festival prévu pour le moment.")
-                        .font(.largeTitle)
-                        .padding()
-                } else {
-                    List(festivals) { festival in
-                        Button(action: {
-                            self.selectedFestivalId = FestivalID(id: festival.id)
-                            self.selectedFestival = festival
-                          
-                        }) {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(festival.nomFestival)
-                                        .font(.headline)
-                                    Text("Du \(formatDate(festival.dateDebut)) au \(formatDate(festival.dateFin))")
-                                        .font(.subheadline)
+        VStack {
+                    if festivals.isEmpty {
+                        Text("Il n’y a pas de festival prévu pour le moment.")
+                            .font(.largeTitle)
+                            .padding()
+                    } else {
+                        List(festivals) { festival in
+                            Button(action: {
+                                self.selectedFestivalId = FestivalID(id: festival.id)
+                                self.selectedFestival = festival
+                            }) {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(festival.nomFestival)
+                                            .font(.headline)
+                                        Text("Du \(formatDate(festival.dateDebut)) au \(formatDate(festival.dateFin))")
+                                            .font(.subheadline)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.gray)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .listStyle(PlainListStyle())
+                        if let selectedFestivalId = selectedFestivalId, let selectedFestival = selectedFestival {
+                            NavigationLink(destination: TabBarView(festivalId: selectedFestivalId, festival: selectedFestival), isActive: Binding<Bool>(
+                                                                    get: { selectedFestivalId != nil },
+                                                                    set: { _ in }
+                                                                )) {
+                                EmptyView()
                             }
                         }
                     }
-                    .listStyle(PlainListStyle())
-                    if let selectedFestivalId = selectedFestivalId, let selectedFestival = selectedFestival {
-                        NavigationLink(destination: TabBarView(festivalId: selectedFestivalId, festival: selectedFestival), isActive: Binding<Bool>(
-                                                                get: { selectedFestivalId != nil },
-                                                                set: { _ in }
-                                                            )) {
-                                                                EmptyView()
-                                                            }
-                    }
-
+                }
+                .navigationBarTitle("Choisir un festival")
+                .onAppear {
+                    self.fetchFestivals()
                 }
             }
-            .navigationBarTitle("Choisir un festival")
-            .onAppear {
-                self.fetchFestivals()
-            }
-        }
-    }
+    
 
     private func fetchFestivals() {
         guard let url = URL(string: "https://awi-api-2.onrender.com/festival-module") else {

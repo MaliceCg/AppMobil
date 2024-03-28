@@ -8,6 +8,7 @@
 import Foundation
 
 enum InscriptionIntent {
+  case fetchFestivalData
   case fetchPositionFestival
   case navigateToInscriptionCreneauView
   case navigateToInscriptionZoneView

@@ -13,7 +13,7 @@ class InscriptionViewModel: ObservableObject{
   @Published var state = InscriptionState()
   
   @Published var idFestival: FestivalID
-  @Published var festival : Festival
+
   
   @Published var positions: [Position] = []
   @Published var employers: [Employer] = []
@@ -34,10 +34,9 @@ class InscriptionViewModel: ObservableObject{
   var timeSlots: [String] = ["09-11", "11-14", "14-17", "17-20", "20-22"]
   
   
-  init(idFestival: FestivalID, festival: Festival) {
+  init(idFestival: FestivalID) {
       self.idFestival = idFestival
-      print("ID FESTIVAL ", idFestival)
-      self.festival = festival
+      send(intent: .fetchFestivalData)
   }
   
   private var inscriptionIntent: InscriptionIntent?
@@ -46,6 +45,9 @@ class InscriptionViewModel: ObservableObject{
       self.inscriptionIntent = intent
 
     switch intent {
+    case .fetchFestivalData:
+        fetchFestivalData()
+        
       case .fetchPositionFestival:
         fetchPositionsData()
         fetchEmployerData()
@@ -61,6 +63,50 @@ class InscriptionViewModel: ObservableObject{
     
   }
   
+    func fetchFestivalData() {
+
+        let festivalURL = "\(url)festival-module/\(idFestival.id)"
+
+        var request = URLRequest(url: URL(string: festivalURL)!)
+        request.httpMethod = "GET" // Définir la méthode HTTP à utiliser
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+      
+        print("URL : ", festivalURL)
+
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+
+            guard let data = data else {
+                print("Error: No data received")
+                return
+            }
+
+          do {
+              let decoder = JSONDecoder()
+              decoder.dateDecodingStrategy = .iso8601
+              let decodedFestival = try decoder.decode(Festival.self, from: data)
+              DispatchQueue.main.async { [self] in
+                  self.objectWillChange.send()
+                  self.state.festival = decodedFestival
+                  fetchPositionsData()
+                  fetchEmployerData()
+                  getPositionsForFestival()
+                  
+              }
+
+
+          } catch {
+              print("Error decoding response: \(error)")
+          }
+
+        }
+
+        task.resume()
+    }
+    
   func getInscriptionCount(timeSlot: String, date: Date, postId: Int) -> Int? {
       guard let inscriptions = self.inscriptions else {
           return 0
@@ -85,6 +131,7 @@ class InscriptionViewModel: ObservableObject{
               inscriptionDateString == dateString
       }
 
+      
       return filteredInscriptions.count
   }
 
@@ -115,6 +162,7 @@ class InscriptionViewModel: ObservableObject{
               let decodedPositions = try decoder.decode([Position].self, from: data)
               DispatchQueue.main.async {
                   self.positions = decodedPositions
+                 
               }
           } catch {
               print("Error decoding response: \(error)")
@@ -199,6 +247,8 @@ class InscriptionViewModel: ObservableObject{
                 employer.idPoste == position.idPoste
             }
         }
+      self.state.loading = false
+      
     }
   
   func postInscription(timeSlot: String, date: Date, completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -208,6 +258,7 @@ class InscriptionViewModel: ObservableObject{
       let dateString = formatter.string(from: date)
     
       if let flexPosition = flexiblePosition {
+          print("je suis flexible")
           for position in flexPosition {
               let inscriptionData: [String: Any?] = [
                   "idBenevole": userId,
@@ -252,7 +303,7 @@ class InscriptionViewModel: ObservableObject{
               task.resume()
           }
       } else {
-                
+          print("je suis pas flexible")
           var inscriptionData: [String: Any]
       
           if let zone = zoneSelected{

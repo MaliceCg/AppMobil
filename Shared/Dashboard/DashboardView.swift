@@ -61,6 +61,7 @@ struct DashboardView: View {
             Spacer()
         }
         .edgesIgnoringSafeArea(.top)
+        .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
     }
 }
 

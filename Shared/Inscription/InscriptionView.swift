@@ -28,6 +28,7 @@ struct InscriptionView: View {
         .onChange(of: isInscriptionCreneauViewActive) { newValue in
             // La vue sera automatiquement mise à jour grâce au `if` dans le `body`
         }
+        .background(Color(red: 0.8588, green: 0.8588, blue: 0.8588, opacity: 1.0))
         .onAppear {
           isInscriptionCreneauViewActive = false
           isInscriptionZoneViewActive = false

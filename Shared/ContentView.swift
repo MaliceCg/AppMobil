@@ -5,6 +5,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var RegisViewModel = RegisterViewModel()
     @ObservedObject var LogViewModel = LoginViewModel()
+    
   
     var body: some View {
         NavigationView {

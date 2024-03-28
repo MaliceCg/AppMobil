@@ -14,11 +14,12 @@ struct PlanningView: View {
 
     @State private var currentPage = "planning"
     
+    
 
     var body: some View {
         VStack {
             HeaderView(selectedFestivalId: $festivalId, currentPage: $currentPage)
-
+          
             PlanningComponent(viewModel: viewModel)
 
             Spacer()
@@ -135,12 +136,12 @@ struct PlanningComponent: View{
      }
   
   var body: some View {
-    if let festival = viewModel.state.festival {
-        Text(festival.nomFestival)
+      if !viewModel.state.loading {
+          Text(viewModel.state.festival!.nomFestival)
             .font(.largeTitle)
         VStack {
         HStack(spacing: 0) {
-            buildDaysView(for: festival)
+            buildDaysView(for: viewModel.state.festival!)
         }
         HStack {
             buildLegendView()

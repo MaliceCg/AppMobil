@@ -28,13 +28,25 @@ struct ActivitesView: View {
             if viewModel.state.loading {
                 ProgressView()
             } else {
+                if viewModel.state.inscription.isEmpty {
+                    HStack {
+                        Text("Vous pouvez vous inscrire à des activités via la page Inscription")
+                    }
+                                    Image(systemName: "exclamationmark.triangle") // Utilisez le logo souhaité
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                    Text("Vous n'avez aucune inscription")
+                                        .font(.headline)
+                                } else {
                 ScrollView {
+                   
                     VStack {
                         ForEach(viewModel.state.inscription, id: \.self) { inscription in
                             InscriptionSquareView(inscription: inscription, viewModel: viewModel)
                         }
                     }
                 }
+            }
             }
             Spacer()
         }
@@ -79,13 +91,7 @@ struct InscriptionSquareView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
-            // Afficher les identifiants des bénévoles pour chaque poste
-            if let referentRelations = viewModel.state.referentRelation.filter({ $0.idPoste == inscription.idPoste }) {
-                let benevoleIds = referentRelations.map({ $0.idBenevole })
-                ForEach(benevoleIds, id: \.self) { benevoleId in
-                    Text("Bénévole ID: \(benevoleId)")
-                }
-            }
+ 
           
             Button(action: {
                             // Appelez la fonction unsubscribe du viewModel

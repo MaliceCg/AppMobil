@@ -8,6 +8,7 @@
 import Foundation
 
 class PlanningState: ObservableObject {
+    var loading: Bool = true
     @Published var festival: Festival? = nil
     @Published var positions: [Position] = []
     @Published var employers: [Employer] = []

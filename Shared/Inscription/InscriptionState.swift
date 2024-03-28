@@ -8,5 +8,7 @@
 import Foundation
 
 class InscriptionState: ObservableObject {
-  
+    @Published var festival: Festival? = nil
+    
+    var loading: Bool = true
 }

@@ -37,7 +37,7 @@ struct TabBarView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId, festival: festival), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
+            InscriptionView(festivalId: $festivalId, viewModel: InscriptionViewModel(idFestival: festivalId), isInscriptionCreneauViewActive: $isInscriptionCreneauViewActive, isInscriptionZoneViewActive: $isInscriptionZoneViewActive)
                 .tag(Tab.inscription)
                 .tabItem {
                     Image(systemName: "person.crop.circle.badge.plus")
