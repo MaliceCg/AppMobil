@@ -114,15 +114,17 @@ struct ProfileView: View {
                                     showSaveButton = true
                                 }
                         }
+                        
+                    }
+                    HStack{
+                        Button(action: {
+                            viewModel.sendIntent(intent: .logout)
+                        }) {
+                            Text("Déconnexion")
+                        }
                     }
                 }
                 .listStyle(GroupedListStyle())
-                .navigationBarTitle("Profil")
-                .navigationBarItems(trailing: Button(action: {
-                    viewModel.sendIntent(intent: .logout)
-                }) {
-                    Text("Déconnexion")
-                })
                 .onAppear {
                     if !viewModel.didFetchUserData {
                         viewModel.sendIntent(intent: .fetchUserData)

@@ -67,7 +67,7 @@ struct HeaderView: View {
 
             switch currentPage {
             case "dashboard":
-                return "Tableau de bord"
+                return "Application"
             case "profile":
                 return "Profil utilisateur"
             case "inscription":

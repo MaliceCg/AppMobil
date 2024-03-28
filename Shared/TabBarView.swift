@@ -32,7 +32,7 @@ struct TabBarView: View {
                     Text("Planning")
                 }
 
-          DashboardView(selectedFestivalId: $festivalId, viewModel: planningViewModel)
+            DashboardView(selectedFestivalId: $festivalId)
                 .tag(Tab.dashboard)
                 .tabItem {
                     Image(systemName: "house")
